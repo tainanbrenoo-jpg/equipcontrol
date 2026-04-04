@@ -3,488 +3,483 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0a0a16">
 <title>EquipControl</title>
+<link rel="manifest" href="data:application/json,{}">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#0a0a16;color:#e0e0e0;min-height:100vh;overflow-x:hidden}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0a0a16}::-webkit-scrollbar-thumb{background:#2a2a40;border-radius:3px}
-input,select,textarea{width:100%;padding:10px 14px;background:#1a1a2e;border:1px solid #2a2a40;border-radius:8px;color:#e0e0e0;font-size:14px;outline:none;box-sizing:border-box;font-family:inherit}
-input:focus,select:focus,textarea:focus{border-color:#2563eb;box-shadow:0 0 0 2px #2563eb33}
-button{font-family:inherit;cursor:pointer;border:none;transition:opacity 0.15s}
-button:active{transform:scale(0.97)}
-.btn{padding:10px 20px;background:#2563eb;color:#fff;border-radius:8px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:6px}
-.btn-s{background:#2a2a40;color:#c0c0d0}
-.btn-d{background:#991b1b;color:#fca5a5}
-.btn-g{background:#059669;color:#fff}
-.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
-.card{background:#12121f;border:1px solid #1a1a2e;border-radius:12px;padding:16px}
-.label{display:block;margin-bottom:4px;color:#8888aa;font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
-.field{margin-bottom:14px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
-.flex{display:flex;gap:8px;align-items:center}
-.wrap{flex-wrap:wrap}
-.overlay{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(4px)}
-.modal{background:#12121f;border:1px solid #2a2a40;border-radius:16px;padding:24px;width:92%;max-width:500px;max-height:85vh;overflow:auto}
-.modal-w{max-width:700px}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a16;color:#e0e0e0;min-height:100vh}
+a{color:#2563eb;text-decoration:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#2a2a40;border-radius:3px}
+input,select,textarea{width:100%;padding:10px 12px;background:#1a1a2e;border:1px solid #2a2a40;border-radius:8px;color:#e0e0e0;font-size:14px;outline:none;font-family:inherit;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:#2563eb;box-shadow:0 0 0 2px rgba(37,99,235,.2)}
+button{font-family:inherit;cursor:pointer;border:none;-webkit-tap-highlight-color:transparent}
+button:active{opacity:.85;transform:scale(.98)}
+.btn{padding:10px 18px;background:#2563eb;color:#fff;border-radius:8px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:6px}
+.btn-s{background:#2a2a40;color:#c0c0d0}.btn-d{background:#7f1d1d;color:#fca5a5}.btn-g{background:#059669}
+.badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;display:inline-block}
+.card{background:#12121f;border:1px solid #1a1a2e;border-radius:12px;padding:16px;margin-bottom:12px}
+.lbl{display:block;margin-bottom:4px;color:#7a7a9a;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.field{margin-bottom:12px}
+.flex{display:flex;gap:8px;align-items:center}.wrap{flex-wrap:wrap}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{padding:10px 12px;text-align:left;color:#6b7280;font-size:11px;font-weight:600;text-transform:uppercase;white-space:nowrap}
-td{padding:10px 12px}
-tr{border-bottom:1px solid #0f0f1e}
-.sidebar{width:230px;background:#0f0f1e;border-right:1px solid #1a1a2e;display:flex;flex-direction:column;flex-shrink:0;height:100vh;position:fixed;left:0;top:0;z-index:100}
-.main{margin-left:230px;min-height:100vh}
-.nav-btn{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:2px;background:transparent;border:1px solid transparent;border-radius:8px;color:#8888aa;font-size:13px;font-weight:500;text-align:left}
-.nav-btn.active{background:#1a1a2e;border-color:#2a2a40;color:#2563eb}
-.mob-menu{display:none;background:none;border:none;color:#8888aa}
-.toast{position:fixed;top:20px;right:20px;z-index:9999;background:#1a1a2e;color:#e0e0e0;padding:12px 20px;border-radius:10px;display:flex;align-items:center;gap:10px;animation:slideIn .3s ease}
-.loader{width:32px;height:32px;border:3px solid #2a2a40;border-top:3px solid #2563eb;border-radius:50%;animation:spin .8s linear infinite;margin:40px auto}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:20px}
-.dropdown{position:absolute;top:100%;left:0;right:0;z-index:50;background:#1a1a2e;border:1px solid #2a2a40;border-radius:8px;margin-top:4px;max-height:200px;overflow:auto}
-.dropdown button{width:100%;padding:8px 12px;background:none;border:none;border-bottom:1px solid #12121f;color:#e0e0e0;text-align:left;font-size:13px;display:flex;justify-content:space-between;cursor:pointer}
-@keyframes slideIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+th{padding:8px 10px;text-align:left;color:#6b7280;font-size:10px;font-weight:700;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #1a1a2e}
+td{padding:8px 10px;border-bottom:1px solid #0f0f1a}
+.sidebar{width:220px;background:#0f0f1e;border-right:1px solid #1a1a2e;position:fixed;left:0;top:0;bottom:0;display:flex;flex-direction:column;z-index:100;transition:transform .25s}
+.main-area{margin-left:220px;min-height:100vh}
+.nav-btn{width:100%;display:flex;align-items:center;gap:8px;padding:9px 12px;margin-bottom:2px;background:transparent;border-radius:8px;color:#7a7a9a;font-size:13px;font-weight:500;text-align:left}
+.nav-btn.act{background:#1a1a2e;color:#2563eb;border:1px solid #2a2a40}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.modal{background:#12121f;border:1px solid #2a2a40;border-radius:14px;padding:20px;width:92%;max-width:520px;max-height:85vh;overflow-y:auto}
+.modal-w{max-width:680px}
+.toast{position:fixed;top:16px;right:16px;z-index:999;background:#12121f;padding:12px 18px;border-radius:10px;font-size:13px;display:flex;align-items:center;gap:8px;animation:si .3s;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.loader{width:28px;height:28px;border:3px solid #1a1a2e;border-top-color:#2563eb;border-radius:50%;animation:sp .7s linear infinite;margin:40px auto}
+.ddrop{position:absolute;top:100%;left:0;right:0;z-index:50;background:#1a1a2e;border:1px solid #2a2a40;border-radius:8px;margin-top:4px;max-height:180px;overflow-y:auto}
+.ddrop button{width:100%;padding:8px 10px;background:none;border:none;border-bottom:1px solid #0f0f1a;color:#e0e0e0;font-size:13px;text-align:left;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.ddrop button:hover{background:#12121f}
+.mob-btn{display:none;background:none;border:none;color:#7a7a9a;padding:4px}
+@keyframes si{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes sp{to{transform:rotate(360deg)}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
 @media(max-width:768px){
-.sidebar{display:none}.sidebar.open{display:flex;z-index:999;height:100vh}
-.main{margin-left:0}.mob-menu{display:block!important}
-.stats-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
-.grid2{grid-template-columns:1fr}
-.hide-mob{display:none}
+.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
+.main-area{margin-left:0}.mob-btn{display:block!important}
+.g2{grid-template-columns:1fr}.hmob{display:none!important}
+.sgrid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
 }
 </style>
 </head>
 <body>
-<div id="app"></div>
-<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<script type="text/babel">
-const {useState,useEffect,useCallback} = React;
+<div id="root"></div>
+<script>
+// ─── CONFIG ─────────────────────────────────
+const SB="https://twbgcbwdqijhwrmrlpvw.supabase.co";
+const SK="sb_secret_0PwWoIYM22geRCzSfNttaQ_cf3SFeok";
+const H={"apikey":SK,"Authorization":"Bearer "+SK,"Content-Type":"application/json"};
 
-// ─── Supabase ──────────────────────────────
-const SB_URL=“https://twbgcbwdqijhwrmrlpvw.supabase.co”;
-const SB_KEY=“sb_secret_0PwWoIYM22geRCzSfNttaQ_cf3SFeok”;
-const sb={
-async q(t,m=“GET”,b=null,p=””){
-const h={“apikey”:SB_KEY,“Authorization”:`Bearer ${SB_KEY}`,“Content-Type”:“application/json”};
-if(m===“POST”)h[“Prefer”]=“return=representation”;
-if(m===“PATCH”)h[“Prefer”]=“return=representation”;
-const r=await fetch(`${SB_URL}/rest/v1/${t}${p}`,{method:m,headers:h,body:b?JSON.stringify(b):undefined});
+async function api(path,method,body){
+const opt={method:method||“GET”,headers:{…H}};
+if(method===“POST”||method===“PATCH”)opt.headers[“Prefer”]=“return=representation”;
+if(body)opt.body=JSON.stringify(body);
+const r=await fetch(SB+”/rest/v1/”+path,opt);
 if(!r.ok)throw new Error(await r.text());
-const tx=await r.text();return tx?JSON.parse(tx):[];
-},
-from(t){
-let ps=[];let sl=”*”;
-const b={
-select(c=”*”){sl=c;return b},
-eq(c,v){ps.push(`${c}=eq.${v}`);return b},
-order(c,{ascending:a=true}={}){ps.push(`order=${c}.${a?"asc":"desc"}`);return b},
-async run(){return sb.q(t,“GET”,null,`?select=${encodeURIComponent(sl)}&${ps.join("&")}`)},
-async ins(d){return sb.q(t,“POST”,d)},
-async upd(d){return sb.q(t,“PATCH”,d,`?${ps.join("&")}`)},
-async del(){return sb.q(t,“DELETE”,null,`?${ps.join("&")}`)},
-};return b;
+const t=await r.text();return t?JSON.parse(t):[];
 }
-};
 
+const $=id=>document.getElementById(id);
 const now=()=>new Date().toISOString();
-const fmt=i=>{if(!i)return”—”;const d=new Date(i);return d.toLocaleDateString(“pt-BR”)+” “+d.toLocaleTimeString(“pt-BR”,{hour:“2-digit”,minute:“2-digit”})};
-const fmtD=i=>i?new Date(i).toLocaleDateString(“pt-BR”):”—”;
+const fmtd=i=>{if(!i)return”—”;return new Date(i).toLocaleDateString(“pt-BR”)};
+const fmtdt=i=>{if(!i)return”—”;const d=new Date(i);return d.toLocaleDateString(“pt-BR”)+” “+d.toLocaleTimeString(“pt-BR”,{hour:“2-digit”,minute:“2-digit”})};
 
-// ─── Icons ─────────────────────────────────
-const I=({n,s=20})=>{
-const d={
-dashboard:<><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></>,
-equipment:<><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></>,
-users:<><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></>,
-checkout:<><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></>,
-ret:<><path d="M15 21h4a2 2 0 002-2V5a2 2 0 00-2-2h-4"/><polyline points="8 17 3 12 8 7"/><line x1="3" y1="12" x2="15" y2="12"/></>,
-history:<><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></>,
-scan:<><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/></>,
-plus:<><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></>,
-check:<><polyline points="20 6 9 17 4 12"/></>,
-x:<><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>,
-alert:<><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></>,
-menu:<><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>,
-logout:<><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></>,
-edit:<><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></>,
-box:<><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></>,
-refresh:<><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></>,
-};
-return <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{d[n]||d.box}</svg>;
-};
+const ST={disponivel:[”#0d3320”,”#34d399”,“Disponível”],emprestado:[”#3b2006”,”#f59e0b”,“Emprestado”],manutencao:[”#3b1006”,”#ef4444”,“Manutenção”],inativo:[”#1e1e2e”,”#6b7280”,“Inativo”],aberto:[”#3b2006”,”#f59e0b”,“Em aberto”],parcial:[”#1e2a3b”,”#60a5fa”,“Parcial”],concluida:[”#0d3320”,”#34d399”,“Concluída”],ativo:[”#0d3320”,”#34d399”,“Ativo”]};
+function badge(s){const c=ST[s]||[”#333”,”#aaa”,s];return’<span class=“badge” style=“background:’+c[0]+”;color:”+c[1]+’”>’+c[2]+”</span>”}
 
-const ST={disponivel:{bg:”#0d3320”,fg:”#34d399”,l:“Disponível”},emprestado:{bg:”#3b2006”,fg:”#f59e0b”,l:“Emprestado”},manutencao:{bg:”#3b1006”,fg:”#ef4444”,l:“Manutenção”},inativo:{bg:”#1e1e2e”,fg:”#6b7280”,l:“Inativo”},aberto:{bg:”#3b2006”,fg:”#f59e0b”,l:“Em aberto”},parcial:{bg:”#1e2a3b”,fg:”#60a5fa”,l:“Parcial”},concluida:{bg:”#0d3320”,fg:”#34d399”,l:“Concluída”},ativo:{bg:”#0d3320”,fg:”#34d399”,l:“Ativo”}};
-const Badge=({s})=>{const c=ST[s]||{bg:”#333”,fg:”#aaa”,l:s};return <span className="badge" style={{background:c.bg,color:c.fg}}>{c.l}</span>};
+// ─── STATE ──────────────────────────────────
+let state={user:null,page:“dashboard”,usuarios:[],equipamentos:[],movs:[],itens:[],sideOpen:false};
 
-const Toast=({msg,type,onClose})=>{useEffect(()=>{const t=setTimeout(onClose,3e3);return()=>clearTimeout(t)},[]);const c={success:”#34d399”,error:”#ef4444”,info:”#60a5fa”};return<div className=“toast” style={{border:`1px solid ${c[type]}`,boxShadow:`0 4px 24px ${c[type]}33`}}><span style={{color:c[type],fontSize:18}}>{type===“success”?“✓”:type===“error”?“✕”:“ℹ”}</span>{msg}</div>};
+function toast(msg,type){
+const c={success:”#34d399”,error:”#ef4444”,info:”#60a5fa”}[type||“success”];
+const icon={success:“✓”,error:“✕”,info:“ℹ”}[type||“success”];
+const d=document.createElement(“div”);
+d.className=“toast”;d.style.border=“1px solid “+c;
+d.innerHTML=’<span style="color:'+c+';font-size:16px">’+icon+”</span> “+msg;
+document.body.appendChild(d);
+setTimeout(()=>d.remove(),3000);
+}
 
-// ═══════════════════════════════════════════
-// APP
-// ═══════════════════════════════════════════
-function App(){
-const[loggedIn,setLoggedIn]=useState(false);
-const[user,setUser]=useState(null);
-const[page,setPage]=useState(“dashboard”);
-const[sideOpen,setSideOpen]=useState(false);
-const[toast,setToast]=useState(null);
-const[loading,setLoading]=useState(false);
-const[usuarios,setUsuarios]=useState([]);
-const[equipamentos,setEquipamentos]=useState([]);
-const[movs,setMovs]=useState([]);
-const[itens,setItens]=useState([]);
-const notify=useCallback((msg,type=“success”)=>setToast({msg,type,k:Date.now()}),[]);
-
-const loadAll=useCallback(async()=>{
-setLoading(true);
+async function loadAll(){
 try{
-const[u,e,m,im]=await Promise.all([sb.from(“usuarios”).select().run(),sb.from(“equipamentos”).select().run(),sb.from(“movimentacoes”).select().order(“data_saida”,{ascending:false}).run(),sb.from(“itens_movimentacao”).select().run()]);
-setUsuarios(u||[]);setEquipamentos(e||[]);setMovs(m||[]);setItens(im||[]);
-}catch(err){notify(“Erro: “+err.message,“error”)}
-setLoading(false);
-},[notify]);
+const[u,e,m,i]=await Promise.all([api(“usuarios?select=*”),api(“equipamentos?select=*”),api(“movimentacoes?select=*&order=data_saida.desc”),api(“itens_movimentacao?select=*”)]);
+state.usuarios=u;state.equipamentos=e;state.movs=m;state.itens=i;
+}catch(err){toast(“Erro ao carregar: “+err.message,“error”)}
+}
 
-useEffect(()=>{if(loggedIn)loadAll()},[loggedIn]);
+async function addLog(acao,ent,eid,det){
+try{await api(“logs_auditoria”,“POST”,{usuario_id:state.user?.id,acao,entidade:ent,entidade_id:eid,detalhes:det,created_at:now()})}catch(e){}
+}
 
-const addLog=async(a,e,eid,d)=>{try{await sb.from(“logs_auditoria”).ins({usuario_id:user?.id,acao:a,entidade:e,entidade_id:eid,detalhes:d,created_at:now()})}catch(x){}};
+// ─── RENDER ─────────────────────────────────
+function render(){$(“root”).innerHTML=state.user?renderApp():renderLogin()}
 
-// Login
-const[loginEmail,setLoginEmail]=useState(“admin@empresa.com”);
-const[loginLoading,setLoginLoading]=useState(false);
+function renderLogin(){
+return`<div style="min-height:100vh;display:flex;align-items:center;justify-content:center">
 
-const handleLogin=async()=>{
-setLoginLoading(true);
-try{const u=await sb.from(“usuarios”).select().eq(“email”,loginEmail).eq(“status”,“ativo”).run();
-if(u&&u.length>0){setUser(u[0]);setLoggedIn(true);notify(“Bem-vindo, “+u[0].nome.split(” “)[0]+”!”)}
-else notify(“Usuário não encontrado”,“error”)}
-catch(e){notify(“Erro: “+e.message,“error”)}
-setLoginLoading(false);
-};
-
-if(!loggedIn)return(
-
-<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}>
-{toast&&<Toast {...toast} onClose={()=>setToast(null)}/>}
-<div style={{width:"90%",maxWidth:380,animation:"slideIn .4s ease"}}>
-<div style={{textAlign:"center",marginBottom:32}}>
-<div style={{width:64,height:64,background:"#1a1a2e",border:"2px solid #2563eb",borderRadius:16,display:"inline-flex",alignItems:"center",justifyContent:"center",marginBottom:16,color:"#2563eb"}}><I n="box" s={32}/></div>
-<h1 style={{color:"#f0f0f0",fontSize:22,fontWeight:700}}>EquipControl</h1>
-<p style={{color:"#6b7280",fontSize:12,marginTop:4,letterSpacing:2}}>GESTÃO DE EQUIPAMENTOS</p>
-<div style={{marginTop:8,padding:"4px 12px",background:"#0d3320",borderRadius:20,display:"inline-block"}}><span style={{color:"#34d399",fontSize:11}}>● Online</span></div>
+<div style="width:90%;max-width:360;animation:fi .4s">
+<div style="text-align:center;margin-bottom:28px">
+<div style="width:60px;height:60px;background:#1a1a2e;border:2px solid #2563eb;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px">
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
 </div>
-<div className="card">
-<div className="field"><label className="label">E-mail</label><input value={loginEmail} onChange={e=>setLoginEmail(e.target.value)} placeholder="seu@email.com"/></div>
-<div className="field"><label className="label">Senha</label><input type="password" defaultValue="admin123" placeholder="••••••" onKeyDown={e=>e.key==="Enter"&&handleLogin()}/></div>
-<button onClick={handleLogin} disabled={loginLoading} className="btn" style={{width:"100%",justifyContent:"center",marginTop:8,opacity:loginLoading?.7:1}}>{loginLoading?"Entrando...":"Entrar"}</button>
-<p style={{color:"#555",fontSize:11,textAlign:"center",marginTop:16}}>Login: admin@empresa.com</p>
+<h1 style="color:#f0f0f0;font-size:22px;font-weight:700">EquipControl</h1>
+<p style="color:#6b7280;font-size:11px;margin-top:4px;letter-spacing:2px">GESTÃO DE EQUIPAMENTOS</p>
+<div style="margin-top:8px;padding:3px 12px;background:#0d3320;border-radius:20px;display:inline-block"><span style="color:#34d399;font-size:11px">● Online</span></div>
+</div>
+<div class="card">
+<div class="field"><label class="lbl">E-mail</label><input id="login-email" value="admin@empresa.com"></div>
+<div class="field"><label class="lbl">Senha</label><input id="login-pass" type="password" value="admin123"></div>
+<button class="btn" style="width:100%;justify-content:center;margin-top:6px" onclick="doLogin()">Entrar</button>
+<p style="color:#555;font-size:11px;text-align:center;margin-top:14px">Login: admin@empresa.com</p>
 </div>
 </div>
+</div>`;
+}
+
+async function doLogin(){
+const email=$(“login-email”).value;
+try{
+const u=await api(“usuarios?select=*&email=eq.”+encodeURIComponent(email)+”&status=eq.ativo”);
+if(u&&u.length>0){state.user=u[0];await loadAll();render();toast(“Bem-vindo, “+u[0].nome.split(” “)[0]+”!”)}
+else toast(“Usuário não encontrado”,“error”);
+}catch(e){toast(“Erro: “+e.message,“error”)}
+}
+
+function nav(p){state.page=p;state.sideOpen=false;render()}
+
+function renderApp(){
+const u=state.user;const isA=u.perfil===“admin”;const isO=u.perfil===“operador”||isA;
+const items=[{id:“dashboard”,l:“Dashboard”,ic:“⊞”},{id:“equipamentos”,l:“Equipamentos”,ic:“📦”}];
+if(isO){items.push({id:“saida”,l:“Nova Saída”,ic:“↗”});items.push({id:“devolucao”,l:“Devolução”,ic:“↙”})}
+if(isA)items.push({id:“usuarios”,l:“Usuários”,ic:“👥”});
+items.push({id:“historico”,l:“Histórico”,ic:“⏱”});
+
+const navH=items.map(i=>’<button class=“nav-btn ‘+(state.page===i.id?“act”:””)+’” onclick=“nav('’+i.id+’')”><span>’+i.ic+’</span> ‘+i.l+’</button>’).join(””);
+const pageTitle=items.find(i=>i.id===state.page)?.l||“Dashboard”;
+
+let content=””;
+if(state.page===“dashboard”)content=renderDash();
+else if(state.page===“equipamentos”)content=renderEquip();
+else if(state.page===“saida”)content=renderSaida();
+else if(state.page===“devolucao”)content=renderDevol();
+else if(state.page===“usuarios”)content=renderUsers();
+else if(state.page===“historico”)content=renderHist();
+
+return`
+
+<aside class="sidebar ${state.sideOpen?"open":""}" id="sidebar">
+<div style="padding:14px;border-bottom:1px solid #1a1a2e;display:flex;align-items:center;gap:8px">
+<div style="width:32px;height:32px;background:#1a1a2e;border:1px solid #2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#2563eb;font-size:16px">📦</div>
+<div><div style="font-weight:700;font-size:13px;color:#f0f0f0">EquipControl</div><div style="font-size:9px;color:#34d399">● Online</div></div>
 </div>
-);
-
-const isAdmin=user?.perfil===“admin”;
-const isOp=user?.perfil===“operador”||isAdmin;
-const nav=[{id:“dashboard”,icon:“dashboard”,label:“Dashboard”},{id:“equipamentos”,icon:“equipment”,label:“Equipamentos”},…(isOp?[{id:“saida”,icon:“checkout”,label:“Nova Saída”},{id:“devolucao”,icon:“ret”,label:“Devolução”}]:[]),…(isAdmin?[{id:“usuarios”,icon:“users”,label:“Usuários”}]:[]),{id:“historico”,icon:“history”,label:“Histórico”}];
-
-return(
-
-<div style={{display:"flex",minHeight:"100vh"}}>
-{toast&&<Toast {...toast} onClose={()=>setToast(null)}/>}
-<aside className={`sidebar ${sideOpen?"open":""}`}>
-<div style={{padding:"16px 14px",borderBottom:"1px solid #1a1a2e",display:"flex",alignItems:"center",gap:10}}>
-<div style={{width:34,height:34,background:"#1a1a2e",border:"1px solid #2563eb",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",color:"#2563eb"}}><I n="box" s={18}/></div>
-<div><div style={{fontWeight:700,fontSize:14,color:"#f0f0f0"}}>EquipControl</div><div style={{fontSize:10,color:"#34d399"}}>● Online</div></div>
-</div>
-<nav style={{flex:1,padding:"10px 8px"}}>
-{nav.map(it=><button key={it.id} onClick={()=>{setPage(it.id);setSideOpen(false)}} className={`nav-btn ${page===it.id?"active":""}`}><I n={it.icon} s={18}/>{it.label}</button>)}
-</nav>
-<div style={{padding:"12px 14px",borderTop:"1px solid #1a1a2e"}}>
-<div style={{fontSize:12,color:"#8888aa",marginBottom:4}}>{user?.nome}</div>
-<div style={{fontSize:10,color:"#555",textTransform:"uppercase",letterSpacing:1}}>{user?.perfil}</div>
-<button onClick={()=>{setLoggedIn(false);setUser(null);setPage("dashboard")}} className="btn btn-s" style={{marginTop:8,width:"100%",justifyContent:"center",padding:"8px",fontSize:12}}><I n="logout" s={14}/>Sair</button>
+<nav style="flex:1;padding:8px 6px">${navH}</nav>
+<div style="padding:12px;border-top:1px solid #1a1a2e">
+<div style="font-size:12px;color:#8888aa">${u.nome}</div>
+<div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-top:2px">${u.perfil}</div>
+<button class="btn btn-s" style="width:100%;justify-content:center;padding:7px;font-size:12px;margin-top:8px" onclick="state.user=null;render()">Sair</button>
 </div>
 </aside>
-<main className="main">
-<div style={{padding:"12px 16px",borderBottom:"1px solid #1a1a2e",display:"flex",alignItems:"center",gap:12}}>
-<button className="mob-menu" onClick={()=>setSideOpen(!sideOpen)}><I n="menu" s={22}/></button>
-<h1 style={{margin:0,fontSize:18,fontWeight:600,color:"#f0f0f0",flex:1}}>{nav.find(n=>n.id===page)?.label||"Dashboard"}</h1>
-<button onClick={loadAll} style={{background:"none",border:"none",color:"#555",cursor:"pointer"}} title="Atualizar"><I n="refresh" s={18}/></button>
+<div class="main-area">
+<div style="padding:10px 14px;border-bottom:1px solid #1a1a2e;display:flex;align-items:center;gap:10px">
+<button class="mob-btn" onclick="state.sideOpen=!state.sideOpen;render()">☰</button>
+<h1 style="margin:0;font-size:17px;font-weight:600;color:#f0f0f0;flex:1">${pageTitle}</h1>
+<button style="background:none;border:none;color:#555;cursor:pointer;font-size:16px" onclick="reloadData()" title="Atualizar">⟳</button>
 </div>
-<div style={{padding:16,maxWidth:1100,margin:"0 auto",animation:"fadeIn .3s ease"}}>
-{loading?<div className="loader"/>:
-page==="dashboard"?<Dash eq={equipamentos} mv={movs} it={itens} us={usuarios} sp={setPage}/>:
-page==="equipamentos"?<Equip eq={equipamentos} isAdmin={isAdmin} notify={notify} addLog={addLog} reload={loadAll}/>:
-page==="saida"?<Saida eq={equipamentos} us={usuarios} user={user} notify={notify} addLog={addLog} reload={loadAll}/>:
-page==="devolucao"?<Devol mv={movs} it={itens} eq={equipamentos} us={usuarios} notify={notify} addLog={addLog} reload={loadAll}/>:
-page==="usuarios"?<Usrs us={usuarios} notify={notify} addLog={addLog} reload={loadAll}/>:
-page==="historico"?<Hist mv={movs} it={itens} eq={equipamentos} us={usuarios}/>:null}
+<div style="padding:14px;max-width:1100;margin:0 auto;animation:fi .3s">${content}</div>
 </div>
-</main>
-{sideOpen&&<div onClick={()=>setSideOpen(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:998}}/>}
-</div>
-);
+${state.sideOpen?'<div style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99" onclick="state.sideOpen=false;render()"></div>':""}`;
 }
 
-// ═══ DASHBOARD ═══
-function Dash({eq,mv,it,us,sp}){
+async function reloadData(){await loadAll();render();toast(“Atualizado!”)}
+
+// ─── DASHBOARD ──────────────────────────────
+function renderDash(){
+const eq=state.equipamentos;const mv=state.movs;const it=state.itens;const us=state.usuarios;
 const today=new Date().toDateString();
 const pend=mv.filter(m=>m.status===“aberto”||m.status===“parcial”);
 const stats=[
-{l:“Total”,v:eq.length,c:”#2563eb”,i:“box”},
-{l:“Disponíveis”,v:eq.filter(e=>e.status===“disponivel”).length,c:”#34d399”,i:“check”},
-{l:“Emprestados”,v:eq.filter(e=>e.status===“emprestado”).length,c:”#f59e0b”,i:“checkout”},
-{l:“Manutenção”,v:eq.filter(e=>e.status===“manutencao”).length,c:”#ef4444”,i:“alert”},
-{l:“Hoje”,v:mv.filter(m=>new Date(m.data_saida).toDateString()===today).length,c:”#818cf8”,i:“history”},
-{l:“Pendentes”,v:pend.length,c:”#f472b6”,i:“ret”},
+[“Total”,eq.length,”#2563eb”],[“Disponíveis”,eq.filter(e=>e.status===“disponivel”).length,”#34d399”],
+[“Emprestados”,eq.filter(e=>e.status===“emprestado”).length,”#f59e0b”],[“Manutenção”,eq.filter(e=>e.status===“manutencao”).length,”#ef4444”],
+[“Hoje”,mv.filter(m=>new Date(m.data_saida).toDateString()===today).length,”#818cf8”],[“Pendentes”,pend.length,”#f472b6”]
 ];
-return(<div>
+let h=’<div class="sgrid">’+stats.map(s=>’<div class="card"><div style="color:#6b7280;font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:6px">’+s[0]+’</div><div style="font-size:26px;font-weight:700;color:'+s[2]+';font-family:monospace">’+s[1]+’</div></div>’).join(””)+”</div>”;
 
-<div className="stats-grid">{stats.map((s,i)=><div key={i} className="card"><div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{color:"#6b7280",fontSize:11,fontWeight:600,textTransform:"uppercase"}}>{s.l}</span><span style={{color:s.c}}><I n={s.i} s={16}/></span></div><div style={{fontSize:28,fontWeight:700,color:s.c,fontFamily:"monospace"}}>{s.v}</div></div>)}</div>
-{pend.length>0&&<div className="card" style={{borderColor:"#3b2006",marginBottom:16}}>
-<h3 style={{margin:"0 0 10px",fontSize:14,color:"#f59e0b",display:"flex",alignItems:"center",gap:6}}><I n="alert" s={16}/>Pendentes</h3>
-{pend.slice(0,5).map(m=>{const r=us.find(u=>u.id===m.responsavel_id);const pc=it.filter(i=>i.movimentacao_id===m.id&&!i.data_devolucao).length;
-return<div key={m.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"1px solid #1a1a2e",fontSize:13}}><span><span style={{color:"#e0e0e0"}}>{r?.nome||"—"}</span> <span style={{color:"#6b7280"}}>· {pc} item(ns) · {fmtD(m.data_saida)}</span></span><Badge s={m.status}/></div>})}
-<button onClick={()=>sp("devolucao")} className="btn" style={{marginTop:10,fontSize:12,padding:"8px 14px"}}>Ver devoluções</button>
-</div>}
-</div>);
+if(pend.length>0){
+h+=’<div class="card" style="border-color:#3b2006"><h3 style="margin:0 0 10px;font-size:14px;color:#f59e0b">⚠ Devoluções Pendentes</h3>’;
+pend.slice(0,5).forEach(m=>{
+const r=us.find(u=>u.id===m.responsavel_id);
+const pc=it.filter(i=>i.movimentacao_id===m.id&&!i.data_devolucao).length;
+h+=’<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #1a1a2e;font-size:13px"><span style="color:#e0e0e0">’+(r?.nome||”—”)+’ <span style="color:#6b7280">· ‘+pc+’ item(ns) · ‘+fmtd(m.data_saida)+’</span></span>’+badge(m.status)+’</div>’;
+});
+h+=’<button class="btn" style="margin-top:10px;font-size:12px;padding:8px 14px" onclick="nav(\'devolucao\')">Ver devoluções</button></div>’;
+}
+return h;
 }
 
-// ═══ EQUIPAMENTOS ═══
-function Equip({eq,isAdmin,notify,addLog,reload}){
-const[search,setSearch]=useState(””);
-const[fs,setFs]=useState(“todos”);
-const[modal,setModal]=useState(null);
-const filtered=eq.filter(e=>{const s=search.toLowerCase();const ms=!s||[e.nome,e.codigo_interno,e.numero_serie,e.codigo_identificacao].some(f=>f?.toLowerCase().includes(s));return ms&&(fs===“todos”||e.status===fs)});
+// ─── EQUIPAMENTOS ───────────────────────────
+function renderEquip(){
+const isA=state.user?.perfil===“admin”;
+const eq=state.equipamentos;
+let h=’<div class="flex wrap" style="margin-bottom:12px"><input id="eq-search" placeholder="Buscar..." style="flex:1;min-width:160px" oninput="render()"><select id="eq-filter" style="width:auto;min-width:120px" onchange="render()"><option value="todos">Todos</option><option value="disponivel">Disponível</option><option value="emprestado">Emprestado</option><option value="manutencao">Manutenção</option><option value="inativo">Inativo</option></select>’;
+if(isA)h+=’<button class="btn" onclick="openEqModal()">+ Novo</button>’;
+h+=’</div>’;
 
-const save=async(f)=>{try{
-if(f.id){await sb.from(“equipamentos”).eq(“id”,f.id).upd({…f,updated_at:now()});await addLog(“Edição”,“equipamentos”,f.id,f.nome)}
-else{const c={…f};delete c.id;await sb.from(“equipamentos”).ins({…c,created_at:now()});await addLog(“Cadastro”,“equipamentos”,null,f.nome)}
-notify(f.id?“Atualizado!”:“Cadastrado!”);setModal(null);reload();
-}catch(e){notify(“Erro: “+e.message,“error”)}};
+const search=($(“eq-search”)?.value||””).toLowerCase();
+const fs=$(“eq-filter”)?.value||“todos”;
+const filtered=eq.filter(e=>{const ms=!search||[e.nome,e.codigo_interno,e.numero_serie,e.codigo_identificacao].some(f=>(f||””).toLowerCase().includes(search));return ms&&(fs===“todos”||e.status===fs)});
 
-const del=async(id)=>{try{await sb.from(“equipamentos”).eq(“id”,id).del();notify(“Removido”);setModal(null);reload()}catch(e){notify(“Erro: “+e.message,“error”)}};
-
-return(<div>
-
-<div className="flex wrap" style={{marginBottom:14}}>
-<input style={{flex:1,minWidth:180}} placeholder="Buscar..." value={search} onChange={e=>setSearch(e.target.value)}/>
-<select style={{width:"auto",minWidth:130}} value={fs} onChange={e=>setFs(e.target.value)}><option value="todos">Todos</option><option value="disponivel">Disponível</option><option value="emprestado">Emprestado</option><option value="manutencao">Manutenção</option><option value="inativo">Inativo</option></select>
-{isAdmin&&<button onClick={()=>setModal("new")} className="btn"><I n="plus" s={16}/>Novo</button>}
-</div>
-<div className="card" style={{padding:0,overflow:"hidden"}}><div style={{overflowX:"auto"}}>
-<table><thead><tr style={{borderBottom:"1px solid #1a1a2e"}}><th>Código</th><th>Equipamento</th><th className="hide-mob">Categoria</th><th className="hide-mob">Local</th><th>Status</th><th></th></tr></thead>
-<tbody>{filtered.map(e=><tr key={e.id}><td style={{color:"#2563eb",fontFamily:"monospace",fontSize:12}}>{e.codigo_interno}</td><td style={{color:"#e0e0e0",fontWeight:500}}>{e.nome}</td><td className="hide-mob" style={{color:"#8888aa"}}>{e.categoria}</td><td className="hide-mob" style={{color:"#8888aa"}}>{e.localizacao_atual}</td><td><Badge s={e.status}/></td><td><button onClick={()=>setModal(e)} style={{background:"none",border:"none",color:"#6b7280",cursor:"pointer"}}><I n="edit" s={16}/></button></td></tr>)}
-{filtered.length===0&&<tr><td colSpan={6} style={{padding:24,textAlign:"center",color:"#555"}}>Nenhum equipamento</td></tr>}
-</tbody></table></div></div>
-{modal&&<EqModal eq={modal==="new"?null:modal} onSave={save} onDel={isAdmin?del:null} onClose={()=>setModal(null)} isAdmin={isAdmin}/>}
-</div>);
+h+=’<div class="card" style="padding:0;overflow:hidden"><div style="overflow-x:auto"><table><thead><tr><th>Código</th><th>Equipamento</th><th class="hmob">Categoria</th><th class="hmob">Local</th><th>Status</th><th></th></tr></thead><tbody>’;
+if(filtered.length===0)h+=’<tr><td colspan="6" style="padding:20px;text-align:center;color:#555">Nenhum equipamento</td></tr>’;
+filtered.forEach(e=>{
+h+=’<tr><td style="color:#2563eb;font-family:monospace;font-size:12px">’+e.codigo_interno+’</td><td style="color:#e0e0e0;font-weight:500">’+e.nome+’</td><td class="hmob" style="color:#8888aa">’+(e.categoria||””)+’</td><td class="hmob" style="color:#8888aa">’+(e.localizacao_atual||””)+’</td><td>’+badge(e.status)+’</td><td><button style="background:none;border:none;color:#6b7280;cursor:pointer" onclick="openEqModal(\''+e.id+'\')">✎</button></td></tr>’;
+});
+h+=”</tbody></table></div></div>”;
+return h;
 }
 
-function EqModal({eq,onSave,onDel,onClose,isAdmin}){
-const[f,setF]=useState(eq||{nome:””,categoria:“Informática”,codigo_interno:””,numero_serie:””,codigo_identificacao:””,tipo_codigo:“qr”,descricao:””,estado_conservacao:“Bom”,localizacao_atual:””,status:“disponivel”});
-const[saving,setSaving]=useState(false);
-const set=(k,v)=>setF(p=>({…p,[k]:v}));
-const handleSave=async()=>{if(!f.nome||!f.codigo_interno)return;setSaving(true);await onSave(f);setSaving(false)};
-return(<div className="overlay" onClick={onClose}><div className={`modal ${isAdmin?"modal-w":""}`} onClick={e=>e.stopPropagation()}>
-
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}><h2 style={{margin:0,fontSize:18,color:"#f0f0f0"}}>{eq?"Editar":"Novo"} Equipamento</h2><button onClick={onClose} style={{background:"none",border:"none",color:"#888",cursor:"pointer"}}><I n="x" s={20}/></button></div>
-<div className="grid2">
-<div className="field"><label className="label">Nome *</label><input value={f.nome} onChange={e=>set("nome",e.target.value)} disabled={!isAdmin}/></div>
-<div className="field"><label className="label">Categoria</label><select value={f.categoria} onChange={e=>set("categoria",e.target.value)} disabled={!isAdmin}>{["Informática","Audiovisual","Ferramentas","Instrumentação","Veículos","Mobiliário","Outros"].map(c=><option key={c}>{c}</option>)}</select></div>
-<div className="field"><label className="label">Código Interno *</label><input value={f.codigo_interno} onChange={e=>set("codigo_interno",e.target.value)} disabled={!isAdmin}/></div>
-<div className="field"><label className="label">Nº Série</label><input value={f.numero_serie||""} onChange={e=>set("numero_serie",e.target.value)} disabled={!isAdmin}/></div>
-<div className="field"><label className="label">Código QR/Barras</label><input value={f.codigo_identificacao||""} onChange={e=>set("codigo_identificacao",e.target.value)} disabled={!isAdmin}/></div>
-<div className="field"><label className="label">Localização</label><input value={f.localizacao_atual||""} onChange={e=>set("localizacao_atual",e.target.value)} disabled={!isAdmin}/></div>
-<div className="field"><label className="label">Conservação</label><select value={f.estado_conservacao} onChange={e=>set("estado_conservacao",e.target.value)} disabled={!isAdmin}>{["Excelente","Bom","Regular","Ruim"].map(c=><option key={c}>{c}</option>)}</select></div>
-<div className="field"><label className="label">Status</label><select value={f.status} onChange={e=>set("status",e.target.value)} disabled={!isAdmin}><option value="disponivel">Disponível</option><option value="emprestado">Emprestado</option><option value="manutencao">Manutenção</option><option value="inativo">Inativo</option></select></div>
-</div>
-<div className="field"><label className="label">Descrição</label><textarea style={{height:50,resize:"vertical"}} value={f.descricao||""} onChange={e=>set("descricao",e.target.value)} disabled={!isAdmin}/></div>
-{isAdmin&&<div className="flex" style={{justifyContent:"flex-end",marginTop:14}}>
-{eq&&onDel&&<button onClick={()=>onDel(eq.id)} className="btn btn-d">Excluir</button>}
-<button onClick={onClose} className="btn btn-s">Cancelar</button>
-<button onClick={handleSave} disabled={saving} className="btn" style={{opacity:saving?.7:1}}>{saving?"Salvando...":"Salvar"}</button>
-</div>}
-</div></div>);
+window._eqModal=null;
+function openEqModal(id){
+const eq=id?state.equipamentos.find(e=>e.id===id):null;
+window._eqModal=eq?{…eq}:{nome:””,categoria:“Informática”,codigo_interno:””,numero_serie:””,codigo_identificacao:””,tipo_codigo:“qr”,descricao:””,estado_conservacao:“Bom”,localizacao_atual:””,status:“disponivel”};
+showEqModal();
 }
 
-// ═══ SCANNER ═══
-function Scanner({onScan,eqs,ph}){
-const[input,setInput]=useState(””);
-const[show,setShow]=useState(false);
-const list=input.length>=1?eqs.filter(e=>[e.nome,e.codigo_interno,e.numero_serie,e.codigo_identificacao].some(f=>f?.toLowerCase().includes(input.toLowerCase()))).slice(0,6):[];
-return(<div style={{position:“relative”}}><div className="flex">
-
-<div style={{flex:1,position:"relative"}}>
-<input placeholder={ph||"Código ou nome..."} value={input} onChange={e=>{setInput(e.target.value);setShow(true)}} onKeyDown={e=>{if(e.key==="Enter"&&input.trim()){const f=eqs.find(eq=>eq.codigo_identificacao===input||eq.codigo_interno===input);if(f){onScan(f);setInput("");setShow(false)}}}} onFocus={()=>setShow(true)}/>
-{show&&list.length>0&&<div className="dropdown">{list.map(eq=><button key={eq.id} onClick={()=>{onScan(eq);setInput("");setShow(false)}}><span>{eq.nome} <span style={{color:"#555",fontSize:11}}>({eq.codigo_interno})</span></span><Badge s={eq.status}/></button>)}</div>}
-</div>
-<button onClick={()=>{const f=eqs.find(eq=>eq.codigo_identificacao===input||eq.codigo_interno===input);if(f){onScan(f);setInput("");setShow(false)}}} className="btn"><I n="scan" s={18}/></button>
-</div></div>);
+function showEqModal(){
+const f=window._eqModal;const isA=state.user?.perfil===“admin”;const isEdit=!!f.id;
+let m=’<div class="overlay" id="eq-overlay" onclick="if(event.target===this)closeEqModal()"><div class="modal modal-w">’;
+m+=’<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="margin:0;font-size:17px;color:#f0f0f0">’+(isEdit?“Editar”:“Novo”)+’ Equipamento</h2><button style="background:none;border:none;color:#888;cursor:pointer;font-size:18px" onclick="closeEqModal()">✕</button></div>’;
+m+=’<div class="g2">’;
+m+=’<div class="field"><label class="lbl">Nome *</label><input id=“ef-nome” value=”’+(f.nome||””)+’” ‘+(isA?””:“disabled”)+”></div>”;
+m+=’<div class="field"><label class="lbl">Categoria</label><select id=“ef-cat” ‘+(isA?””:“disabled”)+”>”+[“Informática”,“Audiovisual”,“Ferramentas”,“Instrumentação”,“Veículos”,“Mobiliário”,“Outros”].map(c=>’<option’+(f.categoria===c?” selected”:””)+”>”+c+”</option>”).join(””)+”</select></div>”;
+m+=’<div class="field"><label class="lbl">Código Interno *</label><input id=“ef-cod” value=”’+(f.codigo_interno||””)+’” ‘+(isA?””:“disabled”)+”></div>”;
+m+=’<div class="field"><label class="lbl">Nº Série</label><input id=“ef-serie” value=”’+(f.numero_serie||””)+’” ‘+(isA?””:“disabled”)+”></div>”;
+m+=’<div class="field"><label class="lbl">Código QR/Barras</label><input id=“ef-qr” value=”’+(f.codigo_identificacao||””)+’” ‘+(isA?””:“disabled”)+”></div>”;
+m+=’<div class="field"><label class="lbl">Localização</label><input id=“ef-loc” value=”’+(f.localizacao_atual||””)+’” ‘+(isA?””:“disabled”)+”></div>”;
+m+=’<div class="field"><label class="lbl">Conservação</label><select id=“ef-cons” ‘+(isA?””:“disabled”)+”>”+[“Excelente”,“Bom”,“Regular”,“Ruim”].map(c=>’<option’+(f.estado_conservacao===c?” selected”:””)+”>”+c+”</option>”).join(””)+”</select></div>”;
+m+=’<div class="field"><label class="lbl">Status</label><select id=“ef-st” ‘+(isA?””:“disabled”)+”>”+[[“disponivel”,“Disponível”],[“emprestado”,“Emprestado”],[“manutencao”,“Manutenção”],[“inativo”,“Inativo”]].map(c=>’<option value=”’+c[0]+’”’+(f.status===c[0]?” selected”:””)+”>”+c[1]+”</option>”).join(””)+”</select></div>”;
+m+=”</div>”;
+m+=’<div class="field"><label class="lbl">Descrição</label><textarea id=“ef-desc” style=“height:45px;resize:vertical” ‘+(isA?””:“disabled”)+”>”+(f.descricao||””)+”</textarea></div>”;
+if(isA){
+m+=’<div class="flex" style="justify-content:flex-end;margin-top:12px">’;
+if(isEdit)m+=’<button class="btn btn-d" onclick="deleteEq(\''+f.id+'\')">Excluir</button>’;
+m+=’<button class="btn btn-s" onclick="closeEqModal()">Cancelar</button>’;
+m+=’<button class="btn" onclick="saveEq()">Salvar</button></div>’;
+}
+m+=”</div></div>”;
+document.body.insertAdjacentHTML(“beforeend”,m);
 }
 
-// ═══ SAÍDA ═══
-function Saida({eq,us,user,notify,addLog,reload}){
-const[rid,setRid]=useState(””);
-const[items,setItems]=useState([]);
-const[obs,setObs]=useState(””);
-const[dp,setDp]=useState(””);
-const[saving,setSaving]=useState(false);
-const avail=eq.filter(e=>e.status===“disponivel”&&!items.find(i=>i.id===e.id));
-const addItem=e=>{if(e.status!==“disponivel”){notify(“Indisponível!”,“error”);return}if(items.find(i=>i.id===e.id)){notify(“Já adicionado”,“info”);return}setItems(p=>[…p,e]);notify(e.nome+” adicionado”)};
-const handleSave=async()=>{
-if(!rid){notify(“Selecione responsável”,“error”);return}if(!items.length){notify(“Adicione equipamentos”,“error”);return}
-setSaving(true);try{
-const mr=await sb.from(“movimentacoes”).ins({tipo:“saida”,responsavel_id:rid,operador_id:user.id,data_saida:now(),data_prevista_devolucao:dp||null,status:“aberto”,observacoes:obs});
-const mid=mr[0]?.id;if(mid){for(const e of items){await sb.from(“itens_movimentacao”).ins({movimentacao_id:mid,equipamento_id:e.id,data_saida:now(),status_item:“emprestado”});await sb.from(“equipamentos”).eq(“id”,e.id).upd({status:“emprestado”,updated_at:now()})}
-await addLog(“Saída”,“movimentacoes”,mid,items.length+” item(ns)”);notify(“Saída registrada!”);setItems([]);setObs(””);setRid(””);setDp(””);reload()}
-}catch(e){notify(“Erro: “+e.message,“error”)}setSaving(false)};
+function closeEqModal(){const o=$(“eq-overlay”);if(o)o.remove()}
 
-return(<div style={{maxWidth:650}}><div className="card">
-
-<h3 style={{margin:"0 0 16px",fontSize:15,color:"#f0f0f0"}}>Registrar Saída</h3>
-<div className="field"><label className="label">Responsável *</label><select value={rid} onChange={e=>setRid(e.target.value)}><option value="">Selecione...</option>{us.filter(u=>u.status==="ativo").map(u=><option key={u.id} value={u.id}>{u.nome} — {u.setor}</option>)}</select></div>
-<div className="field"><label className="label">Previsão Devolução</label><input type="date" value={dp} onChange={e=>setDp(e.target.value)}/></div>
-<div className="field"><label className="label">Adicionar Equipamento</label><Scanner onScan={addItem} eqs={avail} ph="Buscar disponível..."/></div>
-{items.length>0&&<div style={{marginTop:10}}><label className="label">Selecionados ({items.length})</label>
-{items.map(e=><div key={e.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 12px",background:"#0d3320",border:"1px solid #14532d",borderRadius:8,marginBottom:6}}><span style={{color:"#34d399",fontWeight:500,fontSize:13}}>{e.nome} <span style={{color:"#6b7280",fontSize:11}}>{e.codigo_interno}</span></span><button onClick={()=>setItems(p=>p.filter(i=>i.id!==e.id))} style={{background:"none",border:"none",color:"#ef4444",cursor:"pointer"}}><I n="x" s={16}/></button></div>)}
-</div>}
-<div className="field"><label className="label">Observações</label><textarea style={{height:50,resize:"vertical"}} value={obs} onChange={e=>setObs(e.target.value)} placeholder="Opcional..."/></div>
-<button onClick={handleSave} disabled={saving} className="btn" style={{marginTop:6,opacity:saving?.7:1}}>{saving?"Salvando...":"Registrar Saída"}</button>
-</div></div>);
+async function saveEq(){
+const f=window._eqModal;
+const data={nome:$(“ef-nome”).value,categoria:$(“ef-cat”).value,codigo_interno:$(“ef-cod”).value,numero_serie:$(“ef-serie”).value,codigo_identificacao:$(“ef-qr”).value||null,localizacao_atual:$(“ef-loc”).value,estado_conservacao:$(“ef-cons”).value,status:$(“ef-st”).value,descricao:$(“ef-desc”).value};
+if(!data.nome||!data.codigo_interno){toast(“Preencha nome e código”,“error”);return}
+try{
+if(f.id){await api(“equipamentos?id=eq.”+f.id,“PATCH”,{…data,updated_at:now()});await addLog(“Edição”,“equipamentos”,f.id,data.nome)}
+else{await api(“equipamentos”,“POST”,{…data,created_at:now()});await addLog(“Cadastro”,“equipamentos”,null,data.nome)}
+toast(f.id?“Atualizado!”:“Cadastrado!”);closeEqModal();await loadAll();render();
+}catch(e){toast(“Erro: “+e.message,“error”)}
 }
 
-// ═══ DEVOLUÇÃO ═══
-function Devol({mv,it,eq,us,notify,addLog,reload}){
-const[sel,setSel]=useState(null);
-const[obs,setObs]=useState(””);
-const[saving,setSaving]=useState(false);
-const pend=mv.filter(m=>m.status===“aberto”||m.status===“parcial”);
+async function deleteEq(id){
+if(!confirm(“Tem certeza?”))return;
+try{await api(“equipamentos?id=eq.”+id,“DELETE”);toast(“Removido”);closeEqModal();await loadAll();render()}catch(e){toast(“Erro: “+e.message,“error”)}
+}
 
-const devItem=async(iid)=>{setSaving(true);try{
-const item=it.find(i=>i.id===iid);
-await sb.from(“itens_movimentacao”).eq(“id”,iid).upd({data_devolucao:now(),status_item:“devolvido”,observacao_item:obs});
-await sb.from(“equipamentos”).eq(“id”,item.equipamento_id).upd({status:“disponivel”,updated_at:now()});
-const mi=it.filter(i=>i.movimentacao_id===item.movimentacao_id);
+// ─── SAÍDA ──────────────────────────────────
+window._saidaItems=[];
+function renderSaida(){
+const us=state.usuarios.filter(u=>u.status===“ativo”);
+const items=window._saidaItems;
+let h=’<div style="max-width:640px"><div class="card"><h3 style="margin:0 0 14px;font-size:15px;color:#f0f0f0">Registrar Saída</h3>’;
+h+=’<div class="field"><label class="lbl">Responsável *</label><select id="sa-resp"><option value="">Selecione…</option>’+us.map(u=>’<option value="'+u.id+'">’+u.nome+” — “+(u.setor||””)+”</option>”).join(””)+”</select></div>”;
+h+=’<div class="field"><label class="lbl">Previsão Devolução</label><input type="date" id="sa-data"></div>’;
+h+=’<div class="field"><label class="lbl">Adicionar Equipamento</label><div style="position:relative"><div class="flex"><input id="sa-busca" placeholder="Código ou nome..." oninput="showSaidaDrop()" onfocus="showSaidaDrop()"><button class="btn" onclick="addSaidaItem()">🔍</button></div><div class="ddrop" id="sa-drop" style="display:none"></div></div></div>’;
+if(items.length>0){
+h+=’<label class="lbl" style="margin-top:8px">Selecionados (’+items.length+’)</label>’;
+items.forEach((e,i)=>{
+h+=’<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:#0d3320;border:1px solid #14532d;border-radius:8px;margin-bottom:5px"><span style="color:#34d399;font-weight:500;font-size:13px">’+e.nome+’ <span style="color:#6b7280;font-size:11px">’+e.codigo_interno+’</span></span><button style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px" onclick="rmSaidaItem('+i+')">✕</button></div>’;
+});
+}
+h+=’<div class="field" style="margin-top:8px"><label class="lbl">Observações</label><textarea id="sa-obs" style="height:45px;resize:vertical" placeholder="Opcional..."></textarea></div>’;
+h+=’<button class="btn" style="margin-top:6px" onclick="doSaida()">Registrar Saída</button>’;
+h+=”</div></div>”;
+return h;
+}
+
+function showSaidaDrop(){
+const v=($(“sa-busca”)?.value||””).toLowerCase();
+const avail=state.equipamentos.filter(e=>e.status===“disponivel”&&!window._saidaItems.find(i=>i.id===e.id));
+if(v.length<1){$(“sa-drop”).style.display=“none”;return}
+const list=avail.filter(e=>[e.nome,e.codigo_interno,e.numero_serie,e.codigo_identificacao].some(f=>(f||””).toLowerCase().includes(v))).slice(0,6);
+if(list.length===0){$(“sa-drop”).style.display=“none”;return}
+$(“sa-drop”).style.display=“block”;
+$(“sa-drop”).innerHTML=list.map(e=>’<button onclick="pickSaidaItem(\''+e.id+'\')"><span>’+e.nome+’ <span style="color:#555;font-size:11px">(’+e.codigo_interno+’)</span></span>’+badge(e.status)+’</button>’).join(””);
+}
+
+function pickSaidaItem(id){
+const eq=state.equipamentos.find(e=>e.id===id);
+if(eq&&!window._saidaItems.find(i=>i.id===id)){window._saidaItems.push(eq);toast(eq.nome+” adicionado”)}
+$(“sa-drop”).style.display=“none”;$(“sa-busca”).value=””;render();
+}
+
+function addSaidaItem(){
+const v=($(“sa-busca”)?.value||””).trim();
+const eq=state.equipamentos.find(e=>e.codigo_interno===v||e.codigo_identificacao===v||e.numero_serie===v);
+if(eq&&eq.status===“disponivel”&&!window._saidaItems.find(i=>i.id===eq.id)){window._saidaItems.push(eq);toast(eq.nome+” adicionado”);$(“sa-busca”).value=””;render()}
+}
+
+function rmSaidaItem(i){window._saidaItems.splice(i,1);render()}
+
+async function doSaida(){
+const rid=$(“sa-resp”)?.value;const dp=$(“sa-data”)?.value;const obs=$(“sa-obs”)?.value||””;
+if(!rid){toast(“Selecione responsável”,“error”);return}
+if(window._saidaItems.length===0){toast(“Adicione equipamentos”,“error”);return}
+try{
+const mr=await api(“movimentacoes”,“POST”,{tipo:“saida”,responsavel_id:rid,operador_id:state.user.id,data_saida:now(),data_prevista_devolucao:dp||null,status:“aberto”,observacoes:obs});
+const mid=mr[0]?.id;
+if(mid){
+for(const e of window._saidaItems){
+await api(“itens_movimentacao”,“POST”,{movimentacao_id:mid,equipamento_id:e.id,data_saida:now(),status_item:“emprestado”});
+await api(“equipamentos?id=eq.”+e.id,“PATCH”,{status:“emprestado”,updated_at:now()});
+}
+await addLog(“Saída”,“movimentacoes”,mid,window._saidaItems.length+” item(ns)”);
+toast(“Saída registrada com “+window._saidaItems.length+” equipamento(s)!”);
+window._saidaItems=[];await loadAll();render();
+}
+}catch(e){toast(“Erro: “+e.message,“error”)}
+}
+
+// ─── DEVOLUÇÃO ──────────────────────────────
+window._selMov=null;
+function renderDevol(){
+if(window._selMov)return renderDevolDetail();
+const pend=state.movs.filter(m=>m.status===“aberto”||m.status===“parcial”);
+let h=’<div style="max-width:640px"><div class="card"><h3 style="margin:0 0 12px;font-size:15px;color:#f0f0f0">Pendentes</h3>’;
+if(pend.length===0)h+=’<p style="color:#6b7280;font-size:13px">Nenhuma pendência.</p>’;
+pend.forEach(m=>{
+const r=state.usuarios.find(u=>u.id===m.responsavel_id);
+const mi=state.itens.filter(i=>i.movimentacao_id===m.id);
+const pc=mi.filter(i=>!i.data_devolucao).length;
+h+=’<div style="padding:10px;background:#0a0a16;border:1px solid #1a1a2e;border-radius:10px;margin-bottom:7px;cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="window._selMov=\''+m.id+'\';render()"><div><div style="font-weight:500;color:#e0e0e0;font-size:14px">’+(r?.nome||”—”)+’</div><div style="color:#6b7280;font-size:12px;margin-top:2px">Saída: ‘+fmtd(m.data_saida)+’ · ‘+pc+’/’+mi.length+’ pendente(s)</div></div>’+badge(m.status)+’</div>’;
+});
+h+=”</div></div>”;return h;
+}
+
+function renderDevolDetail(){
+const m=state.movs.find(x=>x.id===window._selMov);if(!m){window._selMov=null;return renderDevol()}
+const r=state.usuarios.find(u=>u.id===m.responsavel_id);
+const mi=state.itens.filter(i=>i.movimentacao_id===m.id);
+let h=’<div style="max-width:640px"><button class="btn btn-s" style="margin-bottom:12px;font-size:12px" onclick="window._selMov=null;render()">← Voltar</button>’;
+h+=’<div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:12px"><h3 style="margin:0;font-size:15px;color:#f0f0f0">Devolução</h3>’+badge(m.status)+’</div>’;
+h+=’<p style="font-size:13px;color:#8888aa;margin-bottom:12px">Resp: <strong style="color:#e0e0e0">’+(r?.nome||”—”)+’</strong> · Saída: ‘+fmtdt(m.data_saida)+’</p>’;
+h+=’<label class="lbl">Itens</label>’;
+mi.forEach(i=>{
+const eq=state.equipamentos.find(e=>e.id===i.equipamento_id);const ret=!!i.data_devolucao;
+h+=’<div style=“display:flex;align-items:center;justify-content:space-between;padding:9px 10px;background:’+(ret?”#0d332044”:”#1a1a2e”)+”;border:1px solid “+(ret?”#14532d”:”#2a2a40”)+’;border-radius:8px;margin-bottom:5px”><div><span style=“color:’+(ret?”#34d399”:”#e0e0e0”)+’;font-weight:500;font-size:13px”>’+(eq?.nome||”?”)+’</span><span style="color:#6b7280;font-size:11px;margin-left:6px">’+(eq?.codigo_interno||””)+”</span>”+(ret?’<span style="color:#34d399;font-size:11px;margin-left:6px">✓ ‘+fmtd(i.data_devolucao)+”</span>”:””)+”</div>”;
+if(!ret)h+=’<button class="btn" style="padding:5px 10px;font-size:12px" onclick="devolverItem(\''+i.id+'\')">Devolver</button>’;
+h+=”</div>”;
+});
+h+=’<div class="field" style="margin-top:8px"><label class="lbl">Observações</label><textarea id="dev-obs" style="height:40px;resize:vertical" placeholder="Avarias..."></textarea></div>’;
+if(mi.some(i=>!i.data_devolucao))h+=’<button class="btn btn-g" style="margin-top:6px" onclick="devolverTudo(\''+m.id+'\')">✓ Devolver Todos</button>’;
+h+=”</div></div>”;return h;
+}
+
+async function devolverItem(iid){
+try{
+const item=state.itens.find(i=>i.id===iid);const obs=$(“dev-obs”)?.value||””;
+await api(“itens_movimentacao?id=eq.”+iid,“PATCH”,{data_devolucao:now(),status_item:“devolvido”,observacao_item:obs});
+await api(“equipamentos?id=eq.”+item.equipamento_id,“PATCH”,{status:“disponivel”,updated_at:now()});
+const mi=state.itens.filter(i=>i.movimentacao_id===item.movimentacao_id);
 const allRet=mi.filter(i=>i.id!==iid).every(i=>i.data_devolucao);
-const ns=allRet?“concluida”:“parcial”;
-const ud={status:ns};if(ns===“concluida”)ud.data_fechamento=now();
-await sb.from(“movimentacoes”).eq(“id”,item.movimentacao_id).upd(ud);
-await addLog(“Devolução”,“itens”,iid,””);notify(“Devolvido!”);setObs(””);reload();
-if(ns===“concluida”)setSel(null);
-}catch(e){notify(“Erro: “+e.message,“error”)}setSaving(false)};
-
-const devAll=async(mid)=>{setSaving(true);try{
-const items=it.filter(i=>i.movimentacao_id===mid&&!i.data_devolucao);
-for(const i of items){await sb.from(“itens_movimentacao”).eq(“id”,i.id).upd({data_devolucao:now(),status_item:“devolvido”,observacao_item:obs});await sb.from(“equipamentos”).eq(“id”,i.equipamento_id).upd({status:“disponivel”,updated_at:now()})}
-await sb.from(“movimentacoes”).eq(“id”,mid).upd({status:“concluida”,data_fechamento:now()});
-await addLog(“Devolução total”,“movimentacoes”,mid,””);notify(“Todos devolvidos!”);setSel(null);setObs(””);reload();
-}catch(e){notify(“Erro: “+e.message,“error”)}setSaving(false)};
-
-if(!sel)return(<div style={{maxWidth:650}}><div className="card">
-
-<h3 style={{margin:"0 0 14px",fontSize:15,color:"#f0f0f0"}}>Pendentes</h3>
-{pend.length===0?<p style={{color:"#6b7280",fontSize:13}}>Nenhuma pendência.</p>:
-pend.map(m=>{const r=us.find(u=>u.id===m.responsavel_id);const mi=it.filter(i=>i.movimentacao_id===m.id);const pc=mi.filter(i=>!i.data_devolucao).length;
-return<div key={m.id} onClick={()=>setSel(m)} style={{padding:12,background:"#0a0a16",border:"1px solid #1a1a2e",borderRadius:10,marginBottom:8,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style={{fontWeight:500,color:"#e0e0e0",fontSize:14}}>{r?.nome||"—"}</div><div style={{color:"#6b7280",fontSize:12,marginTop:2}}>Saída: {fmtD(m.data_saida)} · {pc}/{mi.length} pendente(s)</div></div><Badge s={m.status}/></div>})}
-</div></div>);
-
-const mi=it.filter(i=>i.movimentacao_id===sel.id);const r=us.find(u=>u.id===sel.responsavel_id);
-return(<div style={{maxWidth:650}}>
-<button onClick={()=>setSel(null)} className=“btn btn-s” style={{marginBottom:14,fontSize:12}}>← Voltar</button>
-
-<div className="card">
-<div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}><h3 style={{margin:0,fontSize:15,color:"#f0f0f0"}}>Devolução</h3><Badge s={sel.status}/></div>
-<p style={{fontSize:13,color:"#8888aa",marginBottom:14}}>Resp: <strong style={{color:"#e0e0e0"}}>{r?.nome}</strong> · Saída: {fmt(sel.data_saida)}</p>
-<label className="label">Itens</label>
-{mi.map(i=>{const e=eq.find(x=>x.id===i.equipamento_id);const ret=!!i.data_devolucao;
-return<div key={i.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 12px",background:ret?"#0d332044":"#1a1a2e",border:`1px solid ${ret?"#14532d":"#2a2a40"}`,borderRadius:8,marginBottom:6}}>
-<div><span style={{color:ret?"#34d399":"#e0e0e0",fontWeight:500,fontSize:13}}>{e?.nome||"?"}</span><span style={{color:"#6b7280",fontSize:11,marginLeft:8}}>{e?.codigo_interno}</span>{ret&&<span style={{color:"#34d399",fontSize:11,marginLeft:6}}>✓ {fmtD(i.data_devolucao)}</span>}</div>
-{!ret&&<button onClick={()=>devItem(i.id)} disabled={saving} className="btn" style={{padding:"6px 12px",fontSize:12}}>Devolver</button>}
-</div>})}
-<div className="field" style={{marginTop:10}}><label className="label">Observações</label><textarea style={{height:50,resize:"vertical"}} value={obs} onChange={e=>setObs(e.target.value)} placeholder="Avarias..."/></div>
-{mi.some(i=>!i.data_devolucao)&&<button onClick={()=>devAll(sel.id)} disabled={saving} className="btn btn-g" style={{marginTop:6}}><I n="check" s={16}/>Devolver Todos</button>}
-</div></div>);
+const ns=allRet?“concluida”:“parcial”;const ud={status:ns};if(ns===“concluida”)ud.data_fechamento=now();
+await api(“movimentacoes?id=eq.”+item.movimentacao_id,“PATCH”,ud);
+await addLog(“Devolução”,“itens”,iid,””);toast(“Devolvido!”);
+await loadAll();if(ns===“concluida”)window._selMov=null;render();
+}catch(e){toast(“Erro: “+e.message,“error”)}
 }
 
-// ═══ USUÁRIOS ═══
-function Usrs({us,notify,addLog,reload}){
-const[modal,setModal]=useState(null);const[search,setSearch]=useState(””);
-const filtered=us.filter(u=>!search||u.nome.toLowerCase().includes(search.toLowerCase())||u.email.toLowerCase().includes(search.toLowerCase()));
-const save=async f=>{try{
-if(f.id){await sb.from(“usuarios”).eq(“id”,f.id).upd({…f,updated_at:now()});await addLog(“Edição”,“usuarios”,f.id,f.nome)}
-else{const c={…f};delete c.id;await sb.from(“usuarios”).ins({…c,senha_hash:”$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi”,created_at:now()});await addLog(“Cadastro”,“usuarios”,null,f.nome)}
-notify(f.id?“Atualizado!”:“Cadastrado!”);setModal(null);reload();
-}catch(e){notify(“Erro: “+e.message,“error”)}};
-
-return(<div>
-
-<div className="flex wrap" style={{marginBottom:14}}>
-<input style={{flex:1,minWidth:180}} placeholder="Buscar..." value={search} onChange={e=>setSearch(e.target.value)}/>
-<button onClick={()=>setModal("new")} className="btn"><I n="plus" s={16}/>Novo</button>
-</div>
-<div className="card" style={{padding:0,overflow:"hidden"}}><div style={{overflowX:"auto"}}>
-<table><thead><tr style={{borderBottom:"1px solid #1a1a2e"}}><th>Nome</th><th>E-mail</th><th className="hide-mob">Setor</th><th>Perfil</th><th>Status</th><th></th></tr></thead>
-<tbody>{filtered.map(u=><tr key={u.id}><td style={{color:"#e0e0e0",fontWeight:500}}>{u.nome}</td><td style={{color:"#8888aa",fontSize:12}}>{u.email}</td><td className="hide-mob" style={{color:"#8888aa"}}>{u.setor}</td><td><span style={{color:u.perfil==="admin"?"#818cf8":"#60a5fa",fontSize:12,fontWeight:600,textTransform:"uppercase"}}>{u.perfil}</span></td><td><Badge s={u.status==="ativo"?"ativo":"inativo"}/></td><td><button onClick={()=>setModal(u)} style={{background:"none",border:"none",color:"#6b7280",cursor:"pointer"}}><I n="edit" s={16}/></button></td></tr>)}</tbody></table>
-</div></div>
-{modal&&<div className="overlay" onClick={()=>setModal(null)}><div className="modal" onClick={e=>e.stopPropagation()}>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}><h2 style={{margin:0,fontSize:18,color:"#f0f0f0"}}>{modal==="new"?"Novo":"Editar"} Usuário</h2><button onClick={()=>setModal(null)} style={{background:"none",border:"none",color:"#888",cursor:"pointer"}}><I n="x" s={20}/></button></div>
-<UsrForm u={modal==="new"?null:modal} onSave={save} onClose={()=>setModal(null)}/>
-</div></div>}
-</div>);
+async function devolverTudo(mid){
+try{
+const obs=$(“dev-obs”)?.value||””;
+const items=state.itens.filter(i=>i.movimentacao_id===mid&&!i.data_devolucao);
+for(const i of items){
+await api(“itens_movimentacao?id=eq.”+i.id,“PATCH”,{data_devolucao:now(),status_item:“devolvido”,observacao_item:obs});
+await api(“equipamentos?id=eq.”+i.equipamento_id,“PATCH”,{status:“disponivel”,updated_at:now()});
+}
+await api(“movimentacoes?id=eq.”+mid,“PATCH”,{status:“concluida”,data_fechamento:now()});
+await addLog(“Devolução total”,“movimentacoes”,mid,””);toast(“Todos devolvidos!”);
+window._selMov=null;await loadAll();render();
+}catch(e){toast(“Erro: “+e.message,“error”)}
 }
 
-function UsrForm({u,onSave,onClose}){
-const[f,setF]=useState(u||{nome:””,cpf_ou_matricula:””,telefone:””,email:””,setor:””,perfil:“operador”,status:“ativo”});
-const[saving,setSaving]=useState(false);
-const set=(k,v)=>setF(p=>({…p,[k]:v}));
-const hs=async()=>{if(!f.nome||!f.email)return;setSaving(true);await onSave(f);setSaving(false)};
-return(<>
-
-<div className="field"><label className="label">Nome *</label><input value={f.nome} onChange={e=>set("nome",e.target.value)}/></div>
-<div className="grid2">
-<div className="field"><label className="label">CPF/Matrícula</label><input value={f.cpf_ou_matricula||""} onChange={e=>set("cpf_ou_matricula",e.target.value)}/></div>
-<div className="field"><label className="label">Telefone</label><input value={f.telefone||""} onChange={e=>set("telefone",e.target.value)}/></div>
-</div>
-<div className="field"><label className="label">E-mail *</label><input value={f.email} onChange={e=>set("email",e.target.value)}/></div>
-<div className="grid2">
-<div className="field"><label className="label">Setor</label><input value={f.setor||""} onChange={e=>set("setor",e.target.value)}/></div>
-<div className="field"><label className="label">Perfil</label><select value={f.perfil} onChange={e=>set("perfil",e.target.value)}><option value="admin">Admin</option><option value="operador">Operador</option><option value="visualizador">Visualizador</option></select></div>
-</div>
-<div className="flex" style={{justifyContent:"flex-end",marginTop:14}}>
-<button onClick={onClose} className="btn btn-s">Cancelar</button>
-<button onClick={hs} disabled={saving} className="btn" style={{opacity:saving?.7:1}}>{saving?"Salvando...":"Salvar"}</button>
-</div>
-</>);
+// ─── USUÁRIOS ───────────────────────────────
+function renderUsers(){
+const us=state.usuarios;
+let h=’<div class="flex wrap" style="margin-bottom:12px"><input id="us-search" placeholder="Buscar..." style="flex:1;min-width:160px" oninput="render()"><button class="btn" onclick="openUsrModal()">+ Novo</button></div>’;
+const search=($(“us-search”)?.value||””).toLowerCase();
+const filtered=us.filter(u=>!search||u.nome.toLowerCase().includes(search)||u.email.toLowerCase().includes(search));
+h+=’<div class="card" style="padding:0;overflow:hidden"><div style="overflow-x:auto"><table><thead><tr><th>Nome</th><th>E-mail</th><th class="hmob">Setor</th><th>Perfil</th><th>Status</th><th></th></tr></thead><tbody>’;
+filtered.forEach(u=>{
+h+=’<tr><td style="color:#e0e0e0;font-weight:500">’+u.nome+’</td><td style="color:#8888aa;font-size:12px">’+u.email+’</td><td class="hmob" style="color:#8888aa">’+(u.setor||””)+’</td><td><span style=“color:’+(u.perfil===“admin”?”#818cf8”:”#60a5fa”)+’;font-size:11px;font-weight:700;text-transform:uppercase”>’+u.perfil+’</span></td><td>’+badge(u.status===“ativo”?“ativo”:“inativo”)+’</td><td><button style="background:none;border:none;color:#6b7280;cursor:pointer" onclick="openUsrModal(\''+u.id+'\')">✎</button></td></tr>’;
+});
+h+=”</tbody></table></div></div>”;return h;
 }
 
-// ═══ HISTÓRICO ═══
-function Hist({mv,it,eq,us}){
-const[fs,setFs]=useState(“todos”);
-const[exp,setExp]=useState(null);
+window._usrModal=null;
+function openUsrModal(id){
+const u=id?state.usuarios.find(x=>x.id===id):null;
+window._usrModal=u?{…u}:{nome:””,cpf_ou_matricula:””,telefone:””,email:””,setor:””,perfil:“operador”,status:“ativo”};
+showUsrModal();
+}
+
+function showUsrModal(){
+const f=window._usrModal;const isEdit=!!f.id;
+let m=’<div class="overlay" id="usr-overlay" onclick="if(event.target===this)closeUsrModal()"><div class="modal">’;
+m+=’<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="margin:0;font-size:17px;color:#f0f0f0">’+(isEdit?“Editar”:“Novo”)+’ Usuário</h2><button style="background:none;border:none;color:#888;cursor:pointer;font-size:18px" onclick="closeUsrModal()">✕</button></div>’;
+m+=’<div class="field"><label class="lbl">Nome *</label><input id=“uf-nome” value=”’+(f.nome||””)+’”></div>’;
+m+=’<div class="g2"><div class="field"><label class="lbl">CPF/Matrícula</label><input id=“uf-cpf” value=”’+(f.cpf_ou_matricula||””)+’”></div><div class="field"><label class="lbl">Telefone</label><input id=“uf-tel” value=”’+(f.telefone||””)+’”></div></div>’;
+m+=’<div class="field"><label class="lbl">E-mail *</label><input id=“uf-email” value=”’+(f.email||””)+’”></div>’;
+m+=’<div class="g2"><div class="field"><label class="lbl">Setor</label><input id=“uf-setor” value=”’+(f.setor||””)+’”></div><div class="field"><label class="lbl">Perfil</label><select id="uf-perfil">’+[[“admin”,“Admin”],[“operador”,“Operador”],[“visualizador”,“Visualizador”]].map(c=>’<option value=”’+c[0]+’”’+(f.perfil===c[0]?” selected”:””)+”>”+c[1]+”</option>”).join(””)+”</select></div></div>”;
+m+=’<div class="flex" style="justify-content:flex-end;margin-top:12px"><button class="btn btn-s" onclick="closeUsrModal()">Cancelar</button><button class="btn" onclick="saveUsr()">Salvar</button></div>’;
+m+=”</div></div>”;
+document.body.insertAdjacentHTML(“beforeend”,m);
+}
+
+function closeUsrModal(){const o=$(“usr-overlay”);if(o)o.remove()}
+
+async function saveUsr(){
+const f=window._usrModal;
+const data={nome:$(“uf-nome”).value,cpf_ou_matricula:$(“uf-cpf”).value,telefone:$(“uf-tel”).value,email:$(“uf-email”).value,setor:$(“uf-setor”).value,perfil:$(“uf-perfil”).value,status:f.status||“ativo”};
+if(!data.nome||!data.email){toast(“Preencha nome e e-mail”,“error”);return}
+try{
+if(f.id){await api(“usuarios?id=eq.”+f.id,“PATCH”,{…data,updated_at:now()});await addLog(“Edição”,“usuarios”,f.id,data.nome)}
+else{await api(“usuarios”,“POST”,{…data,senha_hash:”$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi”,created_at:now()});await addLog(“Cadastro”,“usuarios”,null,data.nome)}
+toast(f.id?“Atualizado!”:“Cadastrado!”);closeUsrModal();await loadAll();render();
+}catch(e){toast(“Erro: “+e.message,“error”)}
+}
+
+// ─── HISTÓRICO ──────────────────────────────
+function renderHist(){
+const mv=state.movs;
+let h=’<div class="flex" style="margin-bottom:12px"><select id="hi-filter" style="width:auto;min-width:120px" onchange="render()"><option value="todos">Todos</option><option value="aberto">Em aberto</option><option value="parcial">Parcial</option><option value="concluida">Concluída</option></select></div>’;
+const fs=$(“hi-filter”)?.value||“todos”;
 const filtered=mv.filter(m=>fs===“todos”||m.status===fs);
-return(<div>
-
-<div className="flex" style={{marginBottom:14}}><select style={{width:"auto",minWidth:130}} value={fs} onChange={e=>setFs(e.target.value)}><option value="todos">Todos</option><option value="aberto">Em aberto</option><option value="parcial">Parcial</option><option value="concluida">Concluída</option></select></div>
-{filtered.length===0?<div className="card"><p style={{color:"#6b7280",fontSize:13,textAlign:"center"}}>Nenhuma movimentação</p></div>:
-<div style={{display:"flex",flexDirection:"column",gap:8}}>
-{filtered.map(m=>{const r=us.find(u=>u.id===m.responsavel_id);const op=us.find(u=>u.id===m.operador_id);const mi=it.filter(i=>i.movimentacao_id===m.id);const isE=exp===m.id;
-return<div key={m.id} className="card" style={{padding:0}}>
-<div onClick={()=>setExp(isE?null:m.id)} style={{padding:"12px 16px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-<div><div style={{fontWeight:500,color:"#e0e0e0",fontSize:14}}>{r?.nome||"—"} <span style={{color:"#6b7280",fontSize:12}}>· {mi.length} item(ns)</span></div><div style={{color:"#6b7280",fontSize:12,marginTop:2}}>Saída: {fmt(m.data_saida)}{m.data_fechamento?` · Fech: ${fmt(m.data_fechamento)}`:""}{op?` · Op: ${op.nome.split(" ")[0]}`:""}</div></div>
-<Badge s={m.status}/></div>
-{isE&&<div style={{padding:"0 16px 12px",borderTop:"1px solid #1a1a2e"}}>
-{m.observacoes&&<p style={{color:"#8888aa",fontSize:12,marginTop:8}}>Obs: {m.observacoes}</p>}
-{mi.map(i=>{const e=eq.find(x=>x.id===i.equipamento_id);return<div key={i.id} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",fontSize:12,borderBottom:"1px solid #0a0a16"}}><span style={{color:"#e0e0e0"}}>{e?.nome||"?"} <span style={{color:"#555"}}>({e?.codigo_interno})</span></span><span style={{color:i.data_devolucao?"#34d399":"#f59e0b"}}>{i.data_devolucao?`Devolvido ${fmtD(i.data_devolucao)}`:"Pendente"}</span></div>})}
-</div>}
-</div>})}
-</div>}
-</div>);
+if(filtered.length===0){h+=’<div class="card"><p style="color:#6b7280;font-size:13px;text-align:center">Nenhuma movimentação</p></div>’;return h}
+filtered.forEach(m=>{
+const r=state.usuarios.find(u=>u.id===m.responsavel_id);
+const op=state.usuarios.find(u=>u.id===m.operador_id);
+const mi=state.itens.filter(i=>i.movimentacao_id===m.id);
+h+=’<div class="card" style="padding:0"><div style="padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="toggleHist(\''+m.id+'\')">’;
+h+=’<div><div style="font-weight:500;color:#e0e0e0;font-size:14px">’+(r?.nome||”—”)+’ <span style="color:#6b7280;font-size:12px">· ‘+mi.length+’ item(ns)</span></div>’;
+h+=’<div style="color:#6b7280;font-size:12px;margin-top:2px">Saída: ‘+fmtdt(m.data_saida)+(m.data_fechamento?” · Fech: “+fmtdt(m.data_fechamento):””)+(op?” · Op: “+op.nome.split(” “)[0]:””)+’</div></div>’+badge(m.status)+’</div>’;
+h+=’<div id="hi-'+m.id+'" style="display:none;padding:0 14px 10px;border-top:1px solid #1a1a2e">’;
+if(m.observacoes)h+=’<p style="color:#8888aa;font-size:12px;margin-top:6px">Obs: ‘+m.observacoes+’</p>’;
+mi.forEach(i=>{
+const eq=state.equipamentos.find(e=>e.id===i.equipamento_id);
+h+=’<div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12px;border-bottom:1px solid #0a0a16"><span style="color:#e0e0e0">’+(eq?.nome||”?”)+’ <span style="color:#555">(’+(eq?.codigo_interno||””)+’)</span></span><span style=“color:’+(i.data_devolucao?”#34d399”:”#f59e0b”)+’”>’+(i.data_devolucao?“Devolvido “+fmtd(i.data_devolucao):“Pendente”)+’</span></div>’;
+});
+h+=”</div></div>”;
+});
+return h;
 }
 
-ReactDOM.createRoot(document.getElementById(“app”)).render(<App/>);
+function toggleHist(id){const el=$(“hi-”+id);if(el)el.style.display=el.style.display===“none”?“block”:“none”}
+
+// ─── INIT ───────────────────────────────────
+render();
 </script>
 
 </body>
