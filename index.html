@@ -4,8 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0f0f0f">
+<meta name="theme-color" content="#C8102E">
 <title>AssetExp</title>
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AssetExp">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="144x144" href="icons/icon-144.png">
+<link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png">
+<meta name="msapplication-TileImage" content="icons/icon-144.png">
+<meta name="msapplication-TileColor" content="#C8102E">
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -772,6 +783,11 @@ function toggleHist(id){var el=$("hi-"+id);if(el)el.style.display=el.style.displ
 
 emailjs.init(EJS_KEY);
 render();
+
+if("serviceWorker"in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").then(function(reg){reg.addEventListener("updatefound",function(){var n=reg.installing;n.addEventListener("statechange",function(){if(n.state==="installed"&&navigator.serviceWorker.controller)toast("Nova versao disponivel! Recarregue.","info")})})}).catch(function(){})});}
+var _ip=null;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();_ip=e;setTimeout(function(){var b=document.getElementById("pwa-btn");if(b)b.style.display="flex"},3000)});
+function instalarApp(){if(!_ip)return;_ip.prompt();_ip.userChoice.then(function(r){if(r.outcome==="accepted")toast("App instalado com sucesso!");_ip=null;var b=document.getElementById("pwa-btn");if(b)b.style.display="none"})}
+
 </script>
 </body>
 </html>

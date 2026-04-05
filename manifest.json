@@ -1,0 +1,79 @@
+{
+  "name": "AssetExp — Controle de Equipamentos",
+  "short_name": "AssetExp",
+  "description": "Sistema de controle e rastreamento de equipamentos com QR Code",
+  "start_url": "/equipcontrol/",
+  "scope": "/equipcontrol/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#C8102E",
+  "background_color": "#0f0f0f",
+  "lang": "pt-BR",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nova Saida",
+      "short_name": "Saida",
+      "description": "Registrar saida de equipamento",
+      "url": "/equipcontrol/?page=saida",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Devolucao",
+      "short_name": "Devolver",
+      "description": "Registrar devolucao de equipamento",
+      "url": "/equipcontrol/?page=devolucao",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+    }
+  ]
+}
