@@ -333,10 +333,17 @@ function getInitials(nome){if(!nome)return"?";var p=nome.trim().split(" ");retur
 
 function renderApp(){
   var u=state.user,isA=u.perfil==="admin",isO=u.perfil==="operador"||isA;
-  var items=[{id:"dashboard",l:"Dashboard",ic:"◉"},{id:"equipamentos",l:"Equipamentos",ic:"▦"}];
-  if(isO)items.push({id:"saida",l:"Nova Saida",ic:"↗"},{id:"devolucao",l:"Devolucao",ic:"↙"});
-  if(isA)items.push({id:"usuarios",l:"Usuarios",ic:"◎"},{id:"config",l:"Configuracoes",ic:"⚙"});
-  items.push({id:"historico",l:"Historico",ic:"☰"});
+  var _icDash='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>';
+  var _icEq='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>';
+  var _icSaida='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+  var _icDev='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.93"/></svg>';
+  var _icUs='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+  var _icCfg='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>';
+  var _icHist='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>';
+  var items=[{id:"dashboard",l:"Dashboard",ic:_icDash},{id:"equipamentos",l:"Equipamentos",ic:_icEq}];
+  if(isO)items.push({id:"saida",l:"Nova Saida",ic:_icSaida},{id:"devolucao",l:"Devolucao",ic:_icDev});
+  if(isA)items.push({id:"usuarios",l:"Usuarios",ic:_icUs},{id:"config",l:"Configuracoes",ic:_icCfg});
+  items.push({id:"historico",l:"Historico",ic:_icHist});
   var navH=items.map(function(i){return '<button class="nav-btn '+(state.page===i.id?"act":"")+'" onclick="nav(\''+i.id+'\')"><span class="nav-ic">'+i.ic+"</span> "+i.l+"</button>"}).join("");
   var pt=(items.find(function(i){return i.id===state.page})||{}).l||"Dashboard";
   var avatarHtml=u.foto_url?'<img src="'+u.foto_url+'" alt="foto">':getInitials(u.nome);
@@ -372,26 +379,215 @@ function reloadData(){loadAll().then(function(){render();toast("Atualizado!")})}
 function renderDash(){
   var eq=state.equipamentos,mv=state.movs,it=state.itens,us=state.usuarios;
   var today=new Date().toDateString();
+  var now_ts=new Date();
   var pend=mv.filter(function(m){return m.status==="aberto"||m.status==="parcial"});
-  var stats=[
-    {l:"Total",v:eq.length,feat:true},
-    {l:"Disponiveis",v:eq.filter(function(e){return e.status==="disponivel"}).length},
-    {l:"Emprestados",v:eq.filter(function(e){return e.status==="emprestado"}).length},
-    {l:"Manutencao",v:eq.filter(function(e){return e.status==="manutencao"}).length},
-    {l:"Saidas Hoje",v:mv.filter(function(m){return new Date(m.data_saida).toDateString()===today}).length},
-    {l:"Pendentes",v:pend.length}
+
+  /* ── ICONES SVG ── */
+  var ic={
+    box:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
+    check:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    arrow:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>',
+    tool:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    calendar:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+    alert:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><triangle points="10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    user:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+    chart:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+    clock:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    trophy:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 21 12 17 16 21"/><line x1="12" y1="17" x2="12" y2="11"/><path d="M7 4v5a5 5 0 0 0 10 0V4"/><line x1="5" y1="4" x2="19" y2="4"/></svg>'
+  };
+
+  /* ── CALCULOS ── */
+  var disp=eq.filter(function(e){return e.status==="disponivel"}).length;
+  var emp=eq.filter(function(e){return e.status==="emprestado"}).length;
+  var manut=eq.filter(function(e){return e.status==="manutencao"}).length;
+  var hojeSaidas=mv.filter(function(m){return new Date(m.data_saida).toDateString()===today}).length;
+
+  // Atrasados: data_prevista_devolucao < hoje e ainda aberto
+  var atrasados=pend.filter(function(m){
+    if(!m.data_prevista_devolucao)return false;
+    return new Date(m.data_prevista_devolucao)<now_ts;
+  });
+
+  // Taxa de devolucao no prazo
+  var concluidas=mv.filter(function(m){return m.status==="concluida"});
+  var noPrazo=concluidas.filter(function(m){
+    if(!m.data_prevista_devolucao||!m.data_fechamento)return true;
+    return new Date(m.data_fechamento)<=new Date(m.data_prevista_devolucao+"T23:59:59");
+  });
+  var taxaPrazo=concluidas.length>0?Math.round((noPrazo.length/concluidas.length)*100):100;
+
+  // Equipamentos mais emprestados
+  var eqCount={};
+  it.forEach(function(i){eqCount[i.equipamento_id]=(eqCount[i.equipamento_id]||0)+1});
+  var topEq=Object.keys(eqCount).map(function(k){
+    var e=eq.find(function(x){return x.id===k});
+    return{nome:e?e.nome:"?",cod:e?e.codigo_interno:"",count:eqCount[k]};
+  }).sort(function(a,b){return b.count-a.count}).slice(0,5);
+  var maxEq=topEq.length?topEq[0].count:1;
+
+  // Ranking usuarios
+  var usCount={};
+  mv.forEach(function(m){usCount[m.responsavel_id]=(usCount[m.responsavel_id]||0)+1});
+  var topUs=Object.keys(usCount).map(function(k){
+    var u=us.find(function(x){return x.id===k});
+    return{nome:u?u.nome:"?",foto:u?u.foto_url:"",count:usCount[k]};
+  }).sort(function(a,b){return b.count-a.count}).slice(0,5);
+  var maxUs=topUs.length?topUs[0].count:1;
+
+  // Evolucao mensal (ultimos 6 meses)
+  var meses=[];
+  for(var i=5;i>=0;i--){
+    var d=new Date();d.setMonth(d.getMonth()-i);
+    var ym=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
+    var label=d.toLocaleDateString("pt-BR",{month:"short"}).replace(".","");
+    var cnt=mv.filter(function(m){return(m.data_saida||"").substring(0,7)===ym}).length;
+    meses.push({label:label,cnt:cnt,ym:ym});
+  }
+  var maxMes=Math.max.apply(null,meses.map(function(m){return m.cnt}))||1;
+
+  /* ── CARDS DE METRICAS ── */
+  var cards=[
+    {l:"Total",v:eq.length,ic:ic.box,cor:"var(--ac)",bg:"var(--acs)",br:"var(--bdf)"},
+    {l:"Disponiveis",v:disp,ic:ic.check,cor:"var(--green)",bg:"var(--greenbg)",br:"var(--greenbr)"},
+    {l:"Emprestados",v:emp,ic:ic.arrow,cor:"var(--ac3)",bg:"var(--acs)",br:"var(--bdf)"},
+    {l:"Manutencao",v:manut,ic:ic.tool,cor:"var(--amber)",bg:"var(--amberbg)",br:"var(--amberbr)"},
+    {l:"Saidas Hoje",v:hojeSaidas,ic:ic.calendar,cor:"var(--blue)",bg:"var(--bluebg)",br:"var(--bluebr)"},
+    {l:"Atrasados",v:atrasados.length,ic:ic.alert,cor:atrasados.length>0?"var(--red)":"var(--green)",bg:atrasados.length>0?"var(--redbg)":"var(--greenbg)",br:atrasados.length>0?"var(--redbr)":"var(--greenbr)"}
   ];
-  var h='<div class="sgrid">'+stats.map(function(s){return '<div class="stat-card'+(s.feat?" feat":"")+'"><div class="stat-lbl">'+s.l+'</div><div class="stat-val">'+s.v+'</div></div>'}).join("")+"</div>";
+
+  var h='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:20px">';
+  h+=cards.map(function(c){
+    return '<div style="background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:16px;transition:border-color .2s;cursor:default" onmouseover="this.style.borderColor=\''+c.br+'\'" onmouseout="this.style.borderColor=\'var(--bd)\'">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">'
+      +'<div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-weight:600">'+c.l+'</div>'
+      +'<div style="width:32px;height:32px;border-radius:8px;background:'+c.bg+';border:1px solid '+c.br+';display:flex;align-items:center;justify-content:center;color:'+c.cor+';flex-shrink:0">'+c.ic+'</div>'
+      +'</div>'
+      +'<div style="font-family:\'Syne\',sans-serif;font-size:28px;font-weight:800;color:var(--t1);line-height:1">'+c.v+'</div>'
+      +'</div>';
+  }).join("")+"</div>";
+
+  /* ── TAXA + ATRASADOS ── */
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">';
+
+  // Taxa de devolucao
+  var taxaCor=taxaPrazo>=80?"var(--green)":taxaPrazo>=50?"var(--amber)":"var(--red)";
+  h+='<div style="background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:18px">'
+    +'<div style="font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:12px">Taxa no Prazo</div>'
+    +'<div style="display:flex;align-items:flex-end;gap:6px;margin-bottom:10px">'
+    +'<div style="font-family:\'Syne\',sans-serif;font-size:32px;font-weight:800;color:'+taxaCor+'">'+taxaPrazo+'%</div>'
+    +'<div style="font-size:12px;color:var(--t3);margin-bottom:6px">'+noPrazo.length+'/'+concluidas.length+' devol.</div>'
+    +'</div>'
+    +'<div style="background:var(--bg0);border-radius:6px;height:6px;overflow:hidden">'
+    +'<div style="background:'+taxaCor+';height:100%;width:'+taxaPrazo+'%;border-radius:6px;transition:width .6s"></div>'
+    +'</div>'
+    +'</div>';
+
+  // Atrasados destaque
+  var atStr=atrasados.length===0?'<span style="color:var(--green);font-size:13px">Nenhum em atraso!</span>':
+    atrasados.slice(0,3).map(function(m){
+      var r=us.find(function(u){return u.id===m.responsavel_id});
+      var dias=Math.floor((now_ts-new Date(m.data_prevista_devolucao))/(1000*60*60*24));
+      return'<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px">'
+        +'<span style="color:var(--t1)">'+(r?r.nome.split(" ")[0]:"--")+'</span>'
+        +'<span style="color:var(--red);font-weight:600">+'+dias+'d</span>'
+        +'</div>';
+    }).join("");
+  h+='<div style="background:var(--bg2);border:1px solid '+(atrasados.length>0?"var(--redbr)":"var(--bd)")+';border-radius:14px;padding:18px">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+    +'<div style="font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-weight:600">Atrasados</div>'
+    +(atrasados.length>0?'<span style="background:var(--redbg);color:var(--red);border:1px solid var(--redbr);border-radius:20px;font-size:10px;font-weight:700;padding:2px 8px">'+atrasados.length+'</span>':"")
+    +'</div>'+atStr
+    +(atrasados.length>3?'<div style="font-size:11px;color:var(--t3);margin-top:6px">+mais '+(atrasados.length-3)+'</div>':"")
+    +'</div>';
+  h+='</div>';
+
+  /* ── GRAFICO EVOLUCAO MENSAL ── */
+  h+='<div style="background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:20px">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'
+    +'<div style="font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:8px">'+ic.chart+' Evolucao Mensal de Saidas</div>'
+    +'<div style="font-size:11px;color:var(--t3)">ultimos 6 meses</div>'
+    +'</div>'
+    +'<div style="display:flex;align-items:flex-end;gap:8px;height:90px">';
+  meses.forEach(function(m){
+    var pct=maxMes>0?(m.cnt/maxMes)*100:0;
+    var isHoje=m.ym===(now_ts.getFullYear()+"-"+String(now_ts.getMonth()+1).padStart(2,"0"));
+    h+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">'
+      +'<div style="font-size:11px;color:var(--t1);font-weight:600">'+m.cnt+'</div>'
+      +'<div style="width:100%;background:'+(isHoje?"var(--ac)":"var(--bg3)")+';border-radius:6px 6px 0 0;min-height:4px;height:'+Math.max(pct,4)+'%;transition:height .6s;border:1px solid '+(isHoje?"var(--bdf)":"var(--bd)")+'">'
+      +'</div>'
+      +'<div style="font-size:10px;color:'+(isHoje?"var(--ac3)":"var(--t3)")+';font-weight:'+(isHoje?"700":"400")+'">'+m.label+'</div>'
+      +'</div>';
+  });
+  h+='</div></div>';
+
+  /* ── DOIS RANKINGS LADO A LADO ── */
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">';
+
+  // Top equipamentos
+  h+='<div style="background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:18px">'
+    +'<div style="font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:8px;margin-bottom:14px">'+ic.box+' Top Equipamentos</div>';
+  if(!topEq.length){h+='<p style="color:var(--t3);font-size:12px">Sem dados</p>'}
+  else topEq.forEach(function(e,i){
+    var pct=Math.round((e.count/maxEq)*100);
+    h+='<div style="margin-bottom:10px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">'
+      +'<span style="font-size:12px;color:var(--t1);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70%">'+e.nome+'</span>'
+      +'<span style="font-size:11px;color:var(--ac3);font-weight:700;flex-shrink:0">'+e.count+'x</span>'
+      +'</div>'
+      +'<div style="background:var(--bg0);border-radius:4px;height:5px"><div style="background:'+(i===0?"var(--ac)":i===1?"var(--ac3)":"var(--bg3)")+';height:100%;width:'+pct+'%;border-radius:4px;transition:width .6s"></div></div>'
+      +'</div>';
+  });
+  h+='</div>';
+
+  // Ranking usuarios
+  h+='<div style="background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:18px">'
+    +'<div style="font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:8px;margin-bottom:14px">'+ic.trophy+' Ranking Usuarios</div>';
+  if(!topUs.length){h+='<p style="color:var(--t3);font-size:12px">Sem dados</p>'}
+  else topUs.forEach(function(u,i){
+    var pct=Math.round((u.count/maxUs)*100);
+    var medalha=["🥇","🥈","🥉","4°","5°"][i]||"";
+    var avEl=u.foto?'<img src="'+u.foto+'" style="width:24px;height:24px;border-radius:50%;object-fit:cover;flex-shrink:0">':'<div style="width:24px;height:24px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0">'+u.nome.substring(0,2).toUpperCase()+'</div>';
+    h+='<div style="margin-bottom:10px">'
+      +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">'+avEl
+      +'<span style="font-size:12px;color:var(--t1);font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+u.nome.split(" ")[0]+'</span>'
+      +'<span style="font-size:11px;color:var(--t3)">'+medalha+'</span>'
+      +'<span style="font-size:11px;color:var(--ac3);font-weight:700;flex-shrink:0">'+u.count+'</span>'
+      +'</div>'
+      +'<div style="background:var(--bg0);border-radius:4px;height:5px"><div style="background:'+(i===0?"var(--ac)":i===1?"var(--ac3)":"var(--bg3)")+';height:100%;width:'+pct+'%;border-radius:4px;transition:width .6s"></div></div>'
+      +'</div>';
+  });
+  h+='</div></div>';
+
+  /* ── PENDENTES ── */
   if(pend.length>0){
-    h+='<div class="sec-title">Devolucoes Pendentes</div>';
-    h+='<div class="card" style="padding:0;overflow:hidden"><table><thead><tr><th>Responsavel</th><th>Itens</th><th>Saida</th><th>Status</th></tr></thead><tbody>';
-    pend.slice(0,8).forEach(function(m){
+    h+='<div style="background:var(--bg2);border:1px solid var(--bd);border-radius:14px;overflow:hidden;margin-bottom:12px">'
+      +'<div style="padding:16px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between">'
+      +'<div style="font-family:\'Syne\',sans-serif;font-size:13px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:8px">'+ic.clock+' Pendentes de Devolucao'
+      +'<span style="background:var(--amberbg);color:var(--amber);border:1px solid var(--amberbr);border-radius:20px;font-size:10px;font-weight:700;padding:2px 8px">'+pend.length+'</span>'
+      +'</div>'
+      +'<button style="background:none;border:none;color:var(--ac3);font-size:12px;cursor:pointer;font-family:inherit" onclick="nav(\'devolucao\')">Ver todos →</button>'
+      +'</div>'
+      +'<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr>'
+      +'<th style="padding:10px 16px;text-align:left;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--bg1)">Responsavel</th>'
+      +'<th style="padding:10px 16px;text-align:left;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--bg1)">Itens</th>'
+      +'<th style="padding:10px 16px;text-align:left;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--bg1)" class="hmob">Saida</th>'
+      +'<th style="padding:10px 16px;text-align:left;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--bg1)" class="hmob">Previsao</th>'
+      +'<th style="padding:10px 16px;text-align:left;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--bg1)">Status</th>'
+      +'</tr></thead><tbody>';
+    pend.slice(0,6).forEach(function(m){
       var r=us.find(function(u){return u.id===m.responsavel_id});
       var pc=it.filter(function(i){return i.movimentacao_id===m.id&&!i.data_devolucao}).length;
-      h+='<tr style="cursor:pointer" onclick="nav(\'devolucao\')"><td style="color:var(--t1);font-weight:500">'+(r?r.nome:"--")+'</td><td style="color:var(--t2)">'+pc+' item(ns)</td><td style="color:var(--t3)">'+fmtd(m.data_saida)+'</td><td>'+badge(m.status)+'</td></tr>';
+      var isAtrasado=m.data_prevista_devolucao&&new Date(m.data_prevista_devolucao)<now_ts;
+      var avEl=r&&r.foto_url?'<img src="'+r.foto_url+'" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:8px;border:1px solid var(--bd)">':'<span style="display:inline-flex;width:26px;height:26px;border-radius:50%;background:var(--ac);align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;vertical-align:middle;margin-right:8px">'+(r?r.nome.substring(0,2).toUpperCase():"?")+'</span>';
+      h+='<tr style="cursor:pointer" onclick="nav(\'devolucao\')" onmouseover="this.style.background=\'var(--bg3)\'" onmouseout="this.style.background=\'\'"><td style="padding:11px 16px;color:var(--t1);font-weight:500">'+avEl+(r?r.nome:"--")+'</td>'
+        +'<td style="padding:11px 16px;color:var(--t2)">'+pc+' item(ns)</td>'
+        +'<td style="padding:11px 16px;color:var(--t3)" class="hmob">'+fmtd(m.data_saida)+'</td>'
+        +'<td style="padding:11px 16px;color:'+(isAtrasado?"var(--red)":"var(--t3)")+'" class="hmob">'+(m.data_prevista_devolucao?fmtd(m.data_prevista_devolucao):"--")+(isAtrasado?" ⚠":"")+'</td>'
+        +'<td style="padding:11px 16px">'+badge(isAtrasado?"atrasado":m.status)+'</td></tr>';
     });
     h+='</tbody></table></div>';
   }
+
   return h;
 }
 
